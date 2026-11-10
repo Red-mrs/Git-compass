@@ -1,0 +1,73 @@
+body { background: var(--vscode-editor-background); display: flex; min-height: 100vh; }
+#toc {
+  position: sticky; top: 0; align-self: flex-start;
+  width: 230px; flex: none; height: 100vh; overflow: auto;
+  padding: 18px 10px; border-right: 1px solid var(--gc-border);
+  background: var(--vscode-sideBar-background, transparent);
+}
+#toc .brand { font-weight: 700; font-size: 1.15em; margin: 0 8px 12px; }
+#toc a { display: block; padding: 4px 8px; border-radius: 4px; color: var(--vscode-foreground); text-decoration: none; opacity: 0.85; }
+#toc a:hover { background: var(--vscode-list-hoverBackground); opacity: 1; }
+#toc a.active { background: var(--vscode-list-activeSelectionBackground); color: var(--vscode-list-activeSelectionForeground); opacity: 1; }
+main { flex: 1; max-width: 920px; padding: 10px 40px 120px; min-width: 0; }
+section { padding-top: 14px; border-bottom: 1px solid var(--gc-border); padding-bottom: 18px; }
+section:last-child { border-bottom: none; }
+h1 { font-size: 1.6em; margin: 14px 0 8px; }
+h2 { font-size: 1.15em; margin: 20px 0 6px; }
+p, li, dd { line-height: 1.6; }
+.lead { font-size: 1.08em; }
+button.mini { padding: 1px 8px; font-size: 0.9em; vertical-align: 1px; }
+.tip, .warn {
+  border-left: 3px solid var(--gc-blue); background: color-mix(in srgb, var(--gc-blue) 10%, transparent);
+  padding: 8px 12px; border-radius: 4px; margin: 12px 0;
+}
+.warn { border-left-color: var(--gc-orange); background: color-mix(in srgb, var(--gc-orange) 10%, transparent); }
+.orange { color: var(--gc-orange); } .blue { color: var(--gc-blue); }
+table { border-collapse: collapse; width: 100%; margin: 8px 0; }
+td, th { border-bottom: 1px solid var(--gc-border); padding: 6px 10px; vertical-align: top; text-align: left; }
+th { color: var(--gc-muted); font-weight: 600; }
+table.map td:first-child, table.kv td:first-child { white-space: nowrap; width: 1%; }
+table.undo td:first-child { white-space: normal; width: 38%; }
+.mono-l code { font-size: 0.92em; }
+dl dt { font-weight: 700; margin-top: 10px; }
+dl dd { margin: 2px 0 0 18px; }
+pre.code { background: var(--vscode-textCodeBlock-background); padding: 10px 12px; border-radius: 6px; overflow: auto; font-family: var(--vscode-editor-font-family); }
+pre .cur { color: var(--gc-green); } pre .inc { color: var(--gc-blue); }
+kbd { border: 1px solid var(--gc-border); border-bottom-width: 2px; border-radius: 3px; padding: 0 4px; font-size: 0.9em; }
+.st { font-weight: 700; font-family: var(--vscode-editor-font-family); }
+.st.M { color: var(--vscode-gitDecoration-modifiedResourceForeground); }
+.st.U { color: var(--vscode-gitDecoration-untrackedResourceForeground); }
+.st.D { color: var(--vscode-gitDecoration-deletedResourceForeground); }
+
+.steps { display: flex; flex-direction: column; gap: 10px; margin: 10px 0; }
+.step { display: flex; gap: 12px; align-items: flex-start; }
+.step .n {
+  flex: none; width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+  background: var(--vscode-button-background); color: var(--vscode-button-foreground); font-weight: 700;
+}
+.step > div { flex: 1; min-width: 0; }
+
+.diagram { width: 100%; max-width: 760px; margin: 10px 0; }
+.diagram text { fill: var(--vscode-foreground); font-family: var(--vscode-font-family); font-size: 14px; text-anchor: middle; }
+.diagram text.small { font-size: 11px; fill: var(--gc-muted); }
+.diagram text.lbl { font-size: 12px; fill: var(--gc-muted); }
+.diagram text.lbl.l { text-anchor: start; font-weight: 600; fill: var(--vscode-foreground); }
+.diagram .box rect { stroke-width: 2; }
+.diagram .b1 rect { fill: color-mix(in srgb, var(--gc-yellow) 14%, transparent); stroke: var(--gc-yellow); }
+.diagram .b2 rect { fill: color-mix(in srgb, var(--gc-green) 14%, transparent); stroke: var(--gc-green); }
+.diagram .b3 rect { fill: color-mix(in srgb, var(--gc-blue) 14%, transparent); stroke: var(--gc-blue); }
+.diagram .b4 rect { fill: color-mix(in srgb, var(--gc-purple) 14%, transparent); stroke: var(--gc-purple); }
+.diagram .flow { fill: none; stroke: var(--vscode-foreground); stroke-width: 2; opacity: 0.7; }
+.diagram .flow.back { stroke-dasharray: 5 4; }
+.diagram .arrowhead { fill: var(--vscode-foreground); opacity: 0.8; }
+.diagram .lane { fill: none; stroke-width: 4; }
+.diagram .l1 { stroke: var(--gc-green); }
+.diagram .l2 { stroke: var(--gc-blue); }
+.diagram .c1 circle { fill: var(--gc-green); }
+.diagram .c2 circle { fill: var(--gc-blue); }
+.diagram .merge { fill: var(--vscode-editor-background); stroke: var(--gc-green); stroke-width: 4; }
+
+@media (max-width: 760px) {
+  #toc { display: none; }
+  main { padding: 10px 18px 80px; }
+}

@@ -1,0 +1,42 @@
+body { background: var(--vscode-editor-background); }
+.wrap { max-width: 980px; margin: 0 auto; padding: 16px 24px 40px; }
+h2 { display: flex; align-items: center; gap: 8px; margin: 4px 0 6px; }
+h2 .ico { width: 18px; height: 18px; }
+.br { color: var(--gc-green); }
+.warnbox { border-left: 3px solid var(--gc-orange); background: color-mix(in srgb, var(--gc-orange) 12%, transparent); padding: 6px 10px; margin: 8px 0; border-radius: 4px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 10px 0; font-size: 0.9em; }
+.act { padding-left: 8px; border-left: 3px solid var(--gc-border); }
+.act.pick { border-color: var(--gc-green); }
+.act.reword { border-color: var(--gc-blue); }
+.act.edit { border-color: var(--gc-purple); }
+.act.squash, .act.fixup { border-color: var(--gc-yellow); }
+.act.drop { border-color: var(--gc-red); }
+.base { margin: 6px 0; display: flex; align-items: center; gap: 6px; font-size: 0.9em; }
+.list { list-style: none; margin: 0; padding: 0; border: 1px solid var(--gc-border); border-radius: 6px; overflow: hidden; }
+.item {
+  display: grid;
+  grid-template-columns: 18px 52px 100px 64px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--gc-border);
+  border-left: 4px solid var(--gc-green);
+  background: var(--vscode-editor-background);
+}
+.item:last-child { border-bottom: none; }
+.item.reword { border-left-color: var(--gc-blue); }
+.item.edit { border-left-color: var(--gc-purple); }
+.item.squash, .item.fixup { border-left-color: var(--gc-yellow); margin-left: 24px; }
+.item.drop { border-left-color: var(--gc-red); opacity: 0.55; }
+.item.drop .subject { text-decoration: line-through; }
+.item.dragging { opacity: 0.4; }
+.item.over { box-shadow: inset 0 2px 0 var(--vscode-focusBorder); }
+.handle { cursor: grab; color: var(--gc-muted); }
+.arrows { display: flex; }
+.sha { color: var(--gc-muted); font-size: 0.9em; }
+.text { min-width: 0; }
+.subject { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.text textarea { width: 100%; resize: vertical; font-family: var(--vscode-editor-font-family); }
+.who { font-size: 0.88em; white-space: nowrap; }
+.error { color: var(--gc-red); min-height: 1.4em; margin-top: 8px; }
+.buttons { display: flex; gap: 8px; align-items: center; margin-top: 8px; }

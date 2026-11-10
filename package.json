@@ -1,0 +1,2518 @@
+{
+  "name": "git-compass",
+  "displayName": "Git Compass",
+  "description": "A friendly, visual Git cockpit: commit graph, guided commits, branches, stashes, history, blame, interactive rebase, conflict help, GitHub pull requests and a built-in Git guide.",
+  "version": "1.3.0",
+  "publisher": "radomir-novy",
+  "author": {
+    "name": "Radomír Nový"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "icon": "media/icon.png",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "SCM Providers",
+    "Visualization",
+    "Other"
+  ],
+  "keywords": [
+    "git",
+    "graph",
+    "history",
+    "blame",
+    "rebase",
+    "github",
+    "pull request",
+    "stash",
+    "worktree",
+    "beginner"
+  ],
+  "main": "./src/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "extensionKind": [
+    "workspace"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false,
+      "description": "Git Compass runs git commands in your workspace."
+    }
+  },
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "gitCompass",
+          "title": "Git Compass",
+          "icon": "media/compass.svg"
+        }
+      ]
+    },
+    "views": {
+      "gitCompass": [
+        {
+          "type": "webview",
+          "id": "gitCompass.overview",
+          "name": "Overview",
+          "icon": "media/compass.svg"
+        },
+        {
+          "id": "gitCompass.changes",
+          "name": "Changes",
+          "when": "gitCompass.hasRepo",
+          "icon": "media/compass.svg"
+        },
+        {
+          "type": "webview",
+          "id": "gitCompass.graphView",
+          "name": "Graph",
+          "when": "gitCompass.hasRepo",
+          "icon": "media/compass.svg"
+        },
+        {
+          "id": "gitCompass.commits",
+          "name": "Commits",
+          "when": "gitCompass.hasRepo",
+          "visibility": "collapsed",
+          "icon": "media/compass.svg"
+        },
+        {
+          "id": "gitCompass.branches",
+          "name": "Branches",
+          "when": "gitCompass.hasRepo",
+          "icon": "media/compass.svg"
+        },
+        {
+          "id": "gitCompass.worktrees",
+          "name": "Worktrees",
+          "when": "gitCompass.hasRepo",
+          "visibility": "collapsed",
+          "icon": "media/compass.svg"
+        },
+        {
+          "id": "gitCompass.stashes",
+          "name": "Stashes",
+          "when": "gitCompass.hasRepo",
+          "visibility": "collapsed",
+          "icon": "media/compass.svg"
+        },
+        {
+          "id": "gitCompass.tags",
+          "name": "Tags",
+          "when": "gitCompass.hasRepo",
+          "visibility": "collapsed",
+          "icon": "media/compass.svg"
+        },
+        {
+          "id": "gitCompass.fileHistory",
+          "name": "File History",
+          "when": "gitCompass.hasRepo",
+          "visibility": "collapsed",
+          "icon": "media/compass.svg"
+        },
+        {
+          "id": "gitCompass.compare",
+          "name": "Compare",
+          "when": "gitCompass.hasRepo",
+          "visibility": "collapsed",
+          "icon": "media/compass.svg"
+        },
+        {
+          "id": "gitCompass.reflog",
+          "name": "Undo History",
+          "when": "gitCompass.hasRepo",
+          "visibility": "collapsed",
+          "icon": "media/compass.svg"
+        },
+        {
+          "id": "gitCompass.pullRequests",
+          "name": "Pull Requests",
+          "when": "gitCompass.hasRepo",
+          "visibility": "collapsed",
+          "icon": "media/compass.svg"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "gitCompass.refresh",
+        "title": "Refresh",
+        "category": "Git Compass",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "gitCompass.selectRepository",
+        "title": "Select Repository…",
+        "category": "Git Compass",
+        "icon": "$(repo)"
+      },
+      {
+        "command": "gitCompass.init",
+        "title": "Initialize Repository",
+        "category": "Git Compass",
+        "icon": "$(add)"
+      },
+      {
+        "command": "gitCompass.clone",
+        "title": "Clone Repository…",
+        "category": "Git Compass",
+        "icon": "$(repo-clone)"
+      },
+      {
+        "command": "gitCompass.publishToGitHub",
+        "title": "Publish to GitHub…",
+        "category": "Git Compass",
+        "icon": "$(github)"
+      },
+      {
+        "command": "gitCompass.setIdentity",
+        "title": "Set Your Name & Email…",
+        "category": "Git Compass",
+        "icon": "$(account)"
+      },
+      {
+        "command": "gitCompass.openGuide",
+        "title": "Open Guide",
+        "category": "Git Compass",
+        "icon": "$(book)"
+      },
+      {
+        "command": "gitCompass.openWalkthrough",
+        "title": "Open Getting Started Walkthrough",
+        "category": "Git Compass",
+        "icon": "$(mortar-board)"
+      },
+      {
+        "command": "gitCompass.openGraph",
+        "title": "Open Commit Graph",
+        "category": "Git Compass",
+        "icon": "$(type-hierarchy)"
+      },
+      {
+        "command": "gitCompass.openSettings",
+        "title": "Open Settings",
+        "category": "Git Compass",
+        "icon": "$(settings-gear)"
+      },
+      {
+        "command": "gitCompass.showOutput",
+        "title": "Show Git Output (commands log)",
+        "category": "Git Compass",
+        "icon": "$(output)"
+      },
+      {
+        "command": "gitCompass.openRepositoryOnGitHub",
+        "title": "Open Repository on GitHub",
+        "category": "Git Compass",
+        "icon": "$(github)"
+      },
+      {
+        "command": "gitCompass.githubSignIn",
+        "title": "Sign in to GitHub",
+        "category": "Git Compass",
+        "icon": "$(sign-in)"
+      },
+      {
+        "command": "gitCompass.fetch",
+        "title": "Fetch (check remote for new commits)",
+        "category": "Git Compass",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "gitCompass.pull",
+        "title": "Pull",
+        "category": "Git Compass",
+        "icon": "$(arrow-down)"
+      },
+      {
+        "command": "gitCompass.push",
+        "title": "Push",
+        "category": "Git Compass",
+        "icon": "$(arrow-up)"
+      },
+      {
+        "command": "gitCompass.forcePush",
+        "title": "Force Push (with lease)…",
+        "category": "Git Compass",
+        "icon": "$(warning)"
+      },
+      {
+        "command": "gitCompass.sync",
+        "title": "Sync (Pull & Push)",
+        "category": "Git Compass",
+        "icon": "$(sync)"
+      },
+      {
+        "command": "gitCompass.publishBranch",
+        "title": "Publish Branch",
+        "category": "Git Compass",
+        "icon": "$(cloud-upload)"
+      },
+      {
+        "command": "gitCompass.openChange",
+        "title": "Open Changes",
+        "category": "Git Compass",
+        "icon": "$(diff)"
+      },
+      {
+        "command": "gitCompass.openFile",
+        "title": "Open File",
+        "category": "Git Compass",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "gitCompass.stage",
+        "title": "Stage",
+        "category": "Git Compass",
+        "icon": "$(add)"
+      },
+      {
+        "command": "gitCompass.unstage",
+        "title": "Unstage",
+        "category": "Git Compass",
+        "icon": "$(remove)"
+      },
+      {
+        "command": "gitCompass.discard",
+        "title": "Discard Changes…",
+        "category": "Git Compass",
+        "icon": "$(discard)"
+      },
+      {
+        "command": "gitCompass.stageAll",
+        "title": "Stage All Changes",
+        "category": "Git Compass",
+        "icon": "$(add)"
+      },
+      {
+        "command": "gitCompass.unstageAll",
+        "title": "Unstage All Changes",
+        "category": "Git Compass",
+        "icon": "$(remove)"
+      },
+      {
+        "command": "gitCompass.discardAll",
+        "title": "Discard All Changes…",
+        "category": "Git Compass",
+        "icon": "$(discard)"
+      },
+      {
+        "command": "gitCompass.acceptOurs",
+        "title": "Keep Current Version (Ours)",
+        "category": "Git Compass",
+        "icon": "$(arrow-left)"
+      },
+      {
+        "command": "gitCompass.acceptTheirs",
+        "title": "Keep Incoming Version (Theirs)",
+        "category": "Git Compass",
+        "icon": "$(arrow-right)"
+      },
+      {
+        "command": "gitCompass.markResolved",
+        "title": "Mark Resolved",
+        "category": "Git Compass",
+        "icon": "$(check)"
+      },
+      {
+        "command": "gitCompass.openMergeEditor",
+        "title": "Open in Merge Editor",
+        "category": "Git Compass",
+        "icon": "$(git-merge)"
+      },
+      {
+        "command": "gitCompass.addToGitignore",
+        "title": "Add to .gitignore…",
+        "category": "Git Compass",
+        "icon": "$(eye-closed)"
+      },
+      {
+        "command": "gitCompass.stageSelectedLines",
+        "title": "Stage Selected Lines",
+        "category": "Git Compass"
+      },
+      {
+        "command": "gitCompass.unstageSelectedLines",
+        "title": "Unstage Selected Lines",
+        "category": "Git Compass"
+      },
+      {
+        "command": "gitCompass.revertSelectedLines",
+        "title": "Discard Selected Lines",
+        "category": "Git Compass"
+      },
+      {
+        "command": "gitCompass.commit",
+        "title": "Commit…",
+        "category": "Git Compass",
+        "icon": "$(check)"
+      },
+      {
+        "command": "gitCompass.commitAmend",
+        "title": "Amend Last Commit…",
+        "category": "Git Compass",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "gitCompass.undoLastCommit",
+        "title": "Undo Last Commit",
+        "category": "Git Compass",
+        "icon": "$(discard)"
+      },
+      {
+        "command": "gitCompass.editLastCommitMessage",
+        "title": "Edit Last Commit Message…",
+        "category": "Git Compass",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "gitCompass.continueOperation",
+        "title": "Continue Merge/Rebase/Cherry-pick",
+        "category": "Git Compass",
+        "icon": "$(debug-continue)"
+      },
+      {
+        "command": "gitCompass.abortOperation",
+        "title": "Abort Merge/Rebase/Cherry-pick…",
+        "category": "Git Compass",
+        "icon": "$(debug-stop)"
+      },
+      {
+        "command": "gitCompass.skipOperation",
+        "title": "Skip Current Commit (Rebase/Cherry-pick)…",
+        "category": "Git Compass",
+        "icon": "$(debug-step-over)"
+      },
+      {
+        "command": "gitCompass.createBranch",
+        "title": "New Branch…",
+        "category": "Git Compass",
+        "icon": "$(add)"
+      },
+      {
+        "command": "gitCompass.switchBranch",
+        "title": "Switch Branch…",
+        "category": "Git Compass",
+        "icon": "$(git-branch)"
+      },
+      {
+        "command": "gitCompass.checkout",
+        "title": "Switch to This (Checkout)",
+        "category": "Git Compass",
+        "icon": "$(check)"
+      },
+      {
+        "command": "gitCompass.merge",
+        "title": "Merge into Current Branch…",
+        "category": "Git Compass",
+        "icon": "$(git-merge)"
+      },
+      {
+        "command": "gitCompass.rebaseOnto",
+        "title": "Rebase Current Branch onto This…",
+        "category": "Git Compass",
+        "icon": "$(git-pull-request)"
+      },
+      {
+        "command": "gitCompass.deleteBranch",
+        "title": "Delete Branch…",
+        "category": "Git Compass",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "gitCompass.renameBranch",
+        "title": "Rename Branch…",
+        "category": "Git Compass",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "gitCompass.setUpstream",
+        "title": "Set Upstream (Tracking) Branch…",
+        "category": "Git Compass",
+        "icon": "$(link)"
+      },
+      {
+        "command": "gitCompass.pushBranch",
+        "title": "Push Branch",
+        "category": "Git Compass",
+        "icon": "$(arrow-up)"
+      },
+      {
+        "command": "gitCompass.compareWithCurrent",
+        "title": "Compare with Current Branch",
+        "category": "Git Compass",
+        "icon": "$(git-compare)"
+      },
+      {
+        "command": "gitCompass.openBranchOnGitHub",
+        "title": "Open Branch on GitHub",
+        "category": "Git Compass",
+        "icon": "$(github)"
+      },
+      {
+        "command": "gitCompass.createPullRequest",
+        "title": "Create Pull Request…",
+        "category": "Git Compass",
+        "icon": "$(git-pull-request-create)"
+      },
+      {
+        "command": "gitCompass.createWorktree",
+        "title": "New Worktree…",
+        "category": "Git Compass",
+        "icon": "$(add)"
+      },
+      {
+        "command": "gitCompass.openWorktreeNewWindow",
+        "title": "Open Worktree in New Window",
+        "category": "Git Compass",
+        "icon": "$(empty-window)"
+      },
+      {
+        "command": "gitCompass.openWorktreeHere",
+        "title": "Open Worktree in This Window",
+        "category": "Git Compass",
+        "icon": "$(folder-opened)"
+      },
+      {
+        "command": "gitCompass.addWorktreeToWorkspace",
+        "title": "Add Worktree to Workspace",
+        "category": "Git Compass",
+        "icon": "$(root-folder)"
+      },
+      {
+        "command": "gitCompass.revealWorktree",
+        "title": "Reveal Worktree Folder in File Manager",
+        "category": "Git Compass",
+        "icon": "$(folder)"
+      },
+      {
+        "command": "gitCompass.removeWorktree",
+        "title": "Remove Worktree…",
+        "category": "Git Compass",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "gitCompass.lockWorktree",
+        "title": "Lock Worktree…",
+        "category": "Git Compass",
+        "icon": "$(lock)"
+      },
+      {
+        "command": "gitCompass.unlockWorktree",
+        "title": "Unlock Worktree",
+        "category": "Git Compass",
+        "icon": "$(unlock)"
+      },
+      {
+        "command": "gitCompass.pruneWorktrees",
+        "title": "Prune Missing Worktrees…",
+        "category": "Git Compass",
+        "icon": "$(clear-all)"
+      },
+      {
+        "command": "gitCompass.addRemote",
+        "title": "Add Remote…",
+        "category": "Git Compass",
+        "icon": "$(add)"
+      },
+      {
+        "command": "gitCompass.removeRemote",
+        "title": "Remove Remote…",
+        "category": "Git Compass",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "gitCompass.fetchRemote",
+        "title": "Fetch This Remote",
+        "category": "Git Compass",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "gitCompass.showCommit",
+        "title": "Show in Commit Graph",
+        "category": "Git Compass",
+        "icon": "$(eye)"
+      },
+      {
+        "command": "gitCompass.copySha",
+        "title": "Copy Commit ID",
+        "category": "Git Compass",
+        "icon": "$(copy)"
+      },
+      {
+        "command": "gitCompass.copyMessage",
+        "title": "Copy Commit Message",
+        "category": "Git Compass",
+        "icon": "$(copy)"
+      },
+      {
+        "command": "gitCompass.checkoutCommit",
+        "title": "Checkout This Commit (Look Around)…",
+        "category": "Git Compass",
+        "icon": "$(target)"
+      },
+      {
+        "command": "gitCompass.createBranchAt",
+        "title": "Create Branch Here…",
+        "category": "Git Compass",
+        "icon": "$(git-branch)"
+      },
+      {
+        "command": "gitCompass.createTagAt",
+        "title": "Create Tag Here…",
+        "category": "Git Compass",
+        "icon": "$(tag)"
+      },
+      {
+        "command": "gitCompass.cherryPick",
+        "title": "Cherry-pick onto Current Branch…",
+        "category": "Git Compass",
+        "icon": "$(git-commit)"
+      },
+      {
+        "command": "gitCompass.revert",
+        "title": "Revert Commit (Safe Undo)…",
+        "category": "Git Compass",
+        "icon": "$(discard)"
+      },
+      {
+        "command": "gitCompass.resetTo",
+        "title": "Reset Current Branch to Here…",
+        "category": "Git Compass",
+        "icon": "$(history)"
+      },
+      {
+        "command": "gitCompass.compareWithHead",
+        "title": "Compare with HEAD",
+        "category": "Git Compass",
+        "icon": "$(git-compare)"
+      },
+      {
+        "command": "gitCompass.compareCommitWithWorkingTree",
+        "title": "Compare with Working Tree",
+        "category": "Git Compass",
+        "icon": "$(file-diff)"
+      },
+      {
+        "command": "gitCompass.openCommitOnGitHub",
+        "title": "Open Commit on GitHub",
+        "category": "Git Compass",
+        "icon": "$(github)"
+      },
+      {
+        "command": "gitCompass.interactiveRebase",
+        "title": "Edit History (Interactive Rebase)…",
+        "category": "Git Compass",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "gitCompass.openCommitFileDiff",
+        "title": "Open Changes",
+        "category": "Git Compass",
+        "icon": "$(diff)"
+      },
+      {
+        "command": "gitCompass.openFileAtRevision",
+        "title": "Open File at This Revision",
+        "category": "Git Compass",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "gitCompass.restoreFileFromCommit",
+        "title": "Restore This Version of the File…",
+        "category": "Git Compass",
+        "icon": "$(history)"
+      },
+      {
+        "command": "gitCompass.stash",
+        "title": "Stash Changes…",
+        "category": "Git Compass",
+        "icon": "$(archive)"
+      },
+      {
+        "command": "gitCompass.applyStash",
+        "title": "Apply Stash (keep it)",
+        "category": "Git Compass",
+        "icon": "$(check)"
+      },
+      {
+        "command": "gitCompass.popStash",
+        "title": "Pop Stash (apply & delete)",
+        "category": "Git Compass",
+        "icon": "$(export)"
+      },
+      {
+        "command": "gitCompass.dropStash",
+        "title": "Delete Stash…",
+        "category": "Git Compass",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "gitCompass.branchFromStash",
+        "title": "Create Branch from Stash…",
+        "category": "Git Compass",
+        "icon": "$(git-branch)"
+      },
+      {
+        "command": "gitCompass.clearStashes",
+        "title": "Delete All Stashes…",
+        "category": "Git Compass",
+        "icon": "$(clear-all)"
+      },
+      {
+        "command": "gitCompass.openStashFileDiff",
+        "title": "Open Changes",
+        "category": "Git Compass",
+        "icon": "$(diff)"
+      },
+      {
+        "command": "gitCompass.createTag",
+        "title": "Create Tag…",
+        "category": "Git Compass",
+        "icon": "$(add)"
+      },
+      {
+        "command": "gitCompass.deleteTag",
+        "title": "Delete Tag…",
+        "category": "Git Compass",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "gitCompass.pushTag",
+        "title": "Push Tag",
+        "category": "Git Compass",
+        "icon": "$(arrow-up)"
+      },
+      {
+        "command": "gitCompass.pushAllTags",
+        "title": "Push All Tags",
+        "category": "Git Compass",
+        "icon": "$(cloud-upload)"
+      },
+      {
+        "command": "gitCompass.fileHistory",
+        "title": "Show File History",
+        "category": "Git Compass",
+        "icon": "$(history)"
+      },
+      {
+        "command": "gitCompass.openFileHistoryDiff",
+        "title": "Open Changes",
+        "category": "Git Compass",
+        "icon": "$(diff)"
+      },
+      {
+        "command": "gitCompass.compareFileWith",
+        "title": "Compare File with Branch/Commit…",
+        "category": "Git Compass",
+        "icon": "$(git-compare)"
+      },
+      {
+        "command": "gitCompass.openFileOnGitHub",
+        "title": "Open File on GitHub",
+        "category": "Git Compass",
+        "icon": "$(github)"
+      },
+      {
+        "command": "gitCompass.compareRefs",
+        "title": "Compare Branches/Commits…",
+        "category": "Git Compass",
+        "icon": "$(git-compare)"
+      },
+      {
+        "command": "gitCompass.compareWithWorkingTree",
+        "title": "Compare Working Tree with…",
+        "category": "Git Compass",
+        "icon": "$(file-diff)"
+      },
+      {
+        "command": "gitCompass.swapCompare",
+        "title": "Swap Sides",
+        "category": "Git Compass",
+        "icon": "$(arrow-swap)"
+      },
+      {
+        "command": "gitCompass.clearCompare",
+        "title": "Clear Comparison",
+        "category": "Git Compass",
+        "icon": "$(clear-all)"
+      },
+      {
+        "command": "gitCompass.openCompareFileDiff",
+        "title": "Open Changes",
+        "category": "Git Compass",
+        "icon": "$(diff)"
+      },
+      {
+        "command": "gitCompass.restoreToPoint",
+        "title": "Restore to This Point…",
+        "category": "Git Compass",
+        "icon": "$(history)"
+      },
+      {
+        "command": "gitCompass.checkoutPullRequest",
+        "title": "Checkout Pull Request",
+        "category": "Git Compass",
+        "icon": "$(check)"
+      },
+      {
+        "command": "gitCompass.openPullRequest",
+        "title": "Open Pull Request on GitHub",
+        "category": "Git Compass",
+        "icon": "$(github)"
+      },
+      {
+        "command": "gitCompass.copyPullRequestLink",
+        "title": "Copy Pull Request Link",
+        "category": "Git Compass",
+        "icon": "$(copy)"
+      },
+      {
+        "command": "gitCompass.openPullRequestFileDiff",
+        "title": "Open Changes",
+        "category": "Git Compass",
+        "icon": "$(diff)"
+      },
+      {
+        "command": "gitCompass.refreshPullRequests",
+        "title": "Refresh Pull Requests",
+        "category": "Git Compass",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "gitCompass.loadMore",
+        "title": "Load More",
+        "category": "Git Compass"
+      },
+      {
+        "command": "gitCompass.toggleViewAsTree",
+        "title": "Toggle List/Tree View",
+        "category": "Git Compass",
+        "icon": "$(list-tree)"
+      },
+      {
+        "command": "gitCompass.viewAsTree",
+        "title": "View as Tree",
+        "category": "Git Compass",
+        "icon": "$(list-tree)"
+      },
+      {
+        "command": "gitCompass.viewAsList",
+        "title": "View as List",
+        "category": "Git Compass",
+        "icon": "$(list-flat)"
+      },
+      {
+        "command": "gitCompass.pinFileHistory",
+        "title": "Pin File History (keep this file)",
+        "category": "Git Compass",
+        "icon": "$(pin)"
+      },
+      {
+        "command": "gitCompass.unpinFileHistory",
+        "title": "Unpin File History (follow editor)",
+        "category": "Git Compass",
+        "icon": "$(pinned)"
+      },
+      {
+        "command": "gitCompass.toggleFileBlame",
+        "title": "Toggle File Blame",
+        "category": "Git Compass",
+        "icon": "$(person)"
+      },
+      {
+        "command": "gitCompass.toggleLineBlame",
+        "title": "Toggle Current Line Blame",
+        "category": "Git Compass",
+        "icon": "$(eye)"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "gitCompass.openChange",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.openFile",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.openMergeEditor",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.compareWithCurrent",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.openWorktreeHere",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.addWorktreeToWorkspace",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.revealWorktree",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.lockWorktree",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.unlockWorktree",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.fetchRemote",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.showCommit",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.copySha",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.copyMessage",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.checkoutCommit",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.createBranchAt",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.createTagAt",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.cherryPick",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.revert",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.resetTo",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.compareWithHead",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.compareCommitWithWorkingTree",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.openCommitOnGitHub",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.openCommitFileDiff",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.openFileAtRevision",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.restoreFileFromCommit",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.openStashFileDiff",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.deleteTag",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.pushTag",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.openFileHistoryDiff",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.openCompareFileDiff",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.restoreToPoint",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.checkoutPullRequest",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.openPullRequest",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.copyPullRequestLink",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.openPullRequestFileDiff",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.loadMore",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.viewAsTree",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.viewAsList",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.pinFileHistory",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.unpinFileHistory",
+          "when": "false"
+        },
+        {
+          "command": "gitCompass.fetch",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.pull",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.push",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.sync",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.forcePush",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.publishBranch",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.stage",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.unstage",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.discard",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.stageAll",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.unstageAll",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.discardAll",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.commit",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.commitAmend",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.undoLastCommit",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.editLastCommitMessage",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.createBranch",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.switchBranch",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.checkout",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.merge",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.rebaseOnto",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.deleteBranch",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.renameBranch",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.setUpstream",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.pushBranch",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.stash",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.applyStash",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.popStash",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.dropStash",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.branchFromStash",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.clearStashes",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.createTag",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.pushAllTags",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.fileHistory",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.compareFileWith",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.compareRefs",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.compareWithWorkingTree",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.interactiveRebase",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.addRemote",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.removeRemote",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.openGraph",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.createWorktree",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.openWorktreeNewWindow",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.removeWorktree",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.pruneWorktrees",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.acceptOurs",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.acceptTheirs",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.markResolved",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.addToGitignore",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.toggleFileBlame",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.continueOperation",
+          "when": "gitCompass.operation"
+        },
+        {
+          "command": "gitCompass.abortOperation",
+          "when": "gitCompass.operation"
+        },
+        {
+          "command": "gitCompass.skipOperation",
+          "when": "gitCompass.operation == rebase || gitCompass.operation == cherry-pick || gitCompass.operation == revert"
+        },
+        {
+          "command": "gitCompass.selectRepository",
+          "when": "gitCompass.multipleRepos"
+        },
+        {
+          "command": "gitCompass.openRepositoryOnGitHub",
+          "when": "gitCompass.isGitHub"
+        },
+        {
+          "command": "gitCompass.openBranchOnGitHub",
+          "when": "gitCompass.isGitHub"
+        },
+        {
+          "command": "gitCompass.openFileOnGitHub",
+          "when": "gitCompass.isGitHub"
+        },
+        {
+          "command": "gitCompass.createPullRequest",
+          "when": "gitCompass.isGitHub"
+        },
+        {
+          "command": "gitCompass.swapCompare",
+          "when": "gitCompass.hasRepo"
+        },
+        {
+          "command": "gitCompass.clearCompare",
+          "when": "gitCompass.hasRepo"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "gitCompass.openGraph",
+          "when": "view == gitCompass.overview",
+          "group": "navigation@1"
+        },
+        {
+          "command": "gitCompass.openGuide",
+          "when": "view == gitCompass.overview",
+          "group": "navigation@2"
+        },
+        {
+          "command": "gitCompass.refresh",
+          "when": "view == gitCompass.overview",
+          "group": "navigation@3"
+        },
+        {
+          "command": "gitCompass.sync",
+          "when": "view == gitCompass.overview && gitCompass.hasRepo",
+          "group": "1_sync@0"
+        },
+        {
+          "command": "gitCompass.pull",
+          "when": "view == gitCompass.overview && gitCompass.hasRepo",
+          "group": "1_sync@1"
+        },
+        {
+          "command": "gitCompass.push",
+          "when": "view == gitCompass.overview && gitCompass.hasRepo",
+          "group": "1_sync@2"
+        },
+        {
+          "command": "gitCompass.fetch",
+          "when": "view == gitCompass.overview && gitCompass.hasRepo",
+          "group": "1_sync@3"
+        },
+        {
+          "command": "gitCompass.publishBranch",
+          "when": "view == gitCompass.overview && gitCompass.hasRepo",
+          "group": "1_sync@4"
+        },
+        {
+          "command": "gitCompass.forcePush",
+          "when": "view == gitCompass.overview && gitCompass.hasRemote",
+          "group": "1_sync@9"
+        },
+        {
+          "command": "gitCompass.undoLastCommit",
+          "when": "view == gitCompass.overview && gitCompass.hasRepo",
+          "group": "2_commit@0"
+        },
+        {
+          "command": "gitCompass.editLastCommitMessage",
+          "when": "view == gitCompass.overview && gitCompass.hasRepo",
+          "group": "2_commit@1"
+        },
+        {
+          "command": "gitCompass.commitAmend",
+          "when": "view == gitCompass.overview && gitCompass.hasRepo",
+          "group": "2_commit@2"
+        },
+        {
+          "command": "gitCompass.createBranch",
+          "when": "view == gitCompass.overview && gitCompass.hasRepo",
+          "group": "3_branch@0"
+        },
+        {
+          "command": "gitCompass.switchBranch",
+          "when": "view == gitCompass.overview && gitCompass.hasRepo",
+          "group": "3_branch@1"
+        },
+        {
+          "command": "gitCompass.merge",
+          "when": "view == gitCompass.overview && gitCompass.hasRepo",
+          "group": "3_branch@2"
+        },
+        {
+          "command": "gitCompass.rebaseOnto",
+          "when": "view == gitCompass.overview && gitCompass.hasRepo",
+          "group": "3_branch@3"
+        },
+        {
+          "command": "gitCompass.interactiveRebase",
+          "when": "view == gitCompass.overview && gitCompass.hasRepo",
+          "group": "3_branch@4"
+        },
+        {
+          "command": "gitCompass.createWorktree",
+          "when": "view == gitCompass.overview && gitCompass.hasRepo",
+          "group": "3_branch@5"
+        },
+        {
+          "command": "gitCompass.selectRepository",
+          "when": "view == gitCompass.overview && gitCompass.multipleRepos",
+          "group": "4_repo@0"
+        },
+        {
+          "command": "gitCompass.publishToGitHub",
+          "when": "view == gitCompass.overview && gitCompass.hasRepo && !gitCompass.isGitHub",
+          "group": "4_repo@1"
+        },
+        {
+          "command": "gitCompass.openRepositoryOnGitHub",
+          "when": "view == gitCompass.overview && gitCompass.isGitHub",
+          "group": "4_repo@2"
+        },
+        {
+          "command": "gitCompass.addRemote",
+          "when": "view == gitCompass.overview && gitCompass.hasRepo",
+          "group": "4_repo@3"
+        },
+        {
+          "command": "gitCompass.removeRemote",
+          "when": "view == gitCompass.overview && gitCompass.hasRemote",
+          "group": "4_repo@4"
+        },
+        {
+          "command": "gitCompass.init",
+          "when": "view == gitCompass.overview",
+          "group": "4_repo@5"
+        },
+        {
+          "command": "gitCompass.clone",
+          "when": "view == gitCompass.overview",
+          "group": "4_repo@6"
+        },
+        {
+          "command": "gitCompass.setIdentity",
+          "when": "view == gitCompass.overview",
+          "group": "5_misc@0"
+        },
+        {
+          "command": "gitCompass.githubSignIn",
+          "when": "view == gitCompass.overview",
+          "group": "5_misc@1"
+        },
+        {
+          "command": "gitCompass.toggleLineBlame",
+          "when": "view == gitCompass.overview",
+          "group": "5_misc@2"
+        },
+        {
+          "command": "gitCompass.showOutput",
+          "when": "view == gitCompass.overview",
+          "group": "5_misc@3"
+        },
+        {
+          "command": "gitCompass.openWalkthrough",
+          "when": "view == gitCompass.overview",
+          "group": "5_misc@4"
+        },
+        {
+          "command": "gitCompass.openSettings",
+          "when": "view == gitCompass.overview",
+          "group": "5_misc@5"
+        },
+        {
+          "command": "gitCompass.viewAsTree",
+          "when": "view == gitCompass.changes && !gitCompass.viewAsTree",
+          "group": "navigation@1"
+        },
+        {
+          "command": "gitCompass.viewAsList",
+          "when": "view == gitCompass.changes && gitCompass.viewAsTree",
+          "group": "navigation@1"
+        },
+        {
+          "command": "gitCompass.refresh",
+          "when": "view == gitCompass.changes",
+          "group": "navigation@2"
+        },
+        {
+          "command": "gitCompass.stageAll",
+          "when": "view == gitCompass.changes",
+          "group": "1_stage@0"
+        },
+        {
+          "command": "gitCompass.unstageAll",
+          "when": "view == gitCompass.changes",
+          "group": "1_stage@1"
+        },
+        {
+          "command": "gitCompass.discardAll",
+          "when": "view == gitCompass.changes",
+          "group": "1_stage@2"
+        },
+        {
+          "command": "gitCompass.stash",
+          "when": "view == gitCompass.changes",
+          "group": "2_stash@0"
+        },
+        {
+          "command": "gitCompass.openGuide",
+          "when": "view == gitCompass.changes",
+          "group": "9_help@0"
+        },
+        {
+          "command": "gitCompass.openGraph",
+          "when": "view == gitCompass.graphView",
+          "group": "navigation@1"
+        },
+        {
+          "command": "gitCompass.fetch",
+          "when": "view == gitCompass.graphView && gitCompass.hasRemote",
+          "group": "navigation@2"
+        },
+        {
+          "command": "gitCompass.refresh",
+          "when": "view == gitCompass.graphView",
+          "group": "navigation@3"
+        },
+        {
+          "command": "gitCompass.compareRefs",
+          "when": "view == gitCompass.graphView",
+          "group": "1_graph@0"
+        },
+        {
+          "command": "gitCompass.openGuide",
+          "when": "view == gitCompass.graphView",
+          "group": "9_help@0"
+        },
+        {
+          "command": "gitCompass.openGraph",
+          "when": "view == gitCompass.commits",
+          "group": "navigation@1"
+        },
+        {
+          "command": "gitCompass.refresh",
+          "when": "view == gitCompass.commits",
+          "group": "navigation@2"
+        },
+        {
+          "command": "gitCompass.undoLastCommit",
+          "when": "view == gitCompass.commits",
+          "group": "1_commit@0"
+        },
+        {
+          "command": "gitCompass.editLastCommitMessage",
+          "when": "view == gitCompass.commits",
+          "group": "1_commit@1"
+        },
+        {
+          "command": "gitCompass.interactiveRebase",
+          "when": "view == gitCompass.commits",
+          "group": "1_commit@2"
+        },
+        {
+          "command": "gitCompass.compareRefs",
+          "when": "view == gitCompass.commits",
+          "group": "2_compare@0"
+        },
+        {
+          "command": "gitCompass.createBranch",
+          "when": "view == gitCompass.branches",
+          "group": "navigation@1"
+        },
+        {
+          "command": "gitCompass.fetch",
+          "when": "view == gitCompass.branches && gitCompass.hasRemote",
+          "group": "navigation@2"
+        },
+        {
+          "command": "gitCompass.refresh",
+          "when": "view == gitCompass.branches",
+          "group": "navigation@3"
+        },
+        {
+          "command": "gitCompass.switchBranch",
+          "when": "view == gitCompass.branches",
+          "group": "1_branch@0"
+        },
+        {
+          "command": "gitCompass.merge",
+          "when": "view == gitCompass.branches",
+          "group": "1_branch@1"
+        },
+        {
+          "command": "gitCompass.addRemote",
+          "when": "view == gitCompass.branches",
+          "group": "2_remote@0"
+        },
+        {
+          "command": "gitCompass.createWorktree",
+          "when": "view == gitCompass.worktrees",
+          "group": "navigation@1"
+        },
+        {
+          "command": "gitCompass.refresh",
+          "when": "view == gitCompass.worktrees",
+          "group": "navigation@2"
+        },
+        {
+          "command": "gitCompass.pruneWorktrees",
+          "when": "view == gitCompass.worktrees",
+          "group": "1_wt@0"
+        },
+        {
+          "command": "gitCompass.openGuide",
+          "when": "view == gitCompass.worktrees",
+          "group": "9_help@0"
+        },
+        {
+          "command": "gitCompass.stash",
+          "when": "view == gitCompass.stashes",
+          "group": "navigation@1"
+        },
+        {
+          "command": "gitCompass.refresh",
+          "when": "view == gitCompass.stashes",
+          "group": "navigation@2"
+        },
+        {
+          "command": "gitCompass.clearStashes",
+          "when": "view == gitCompass.stashes",
+          "group": "1_stash@0"
+        },
+        {
+          "command": "gitCompass.createTag",
+          "when": "view == gitCompass.tags",
+          "group": "navigation@1"
+        },
+        {
+          "command": "gitCompass.refresh",
+          "when": "view == gitCompass.tags",
+          "group": "navigation@2"
+        },
+        {
+          "command": "gitCompass.pushAllTags",
+          "when": "view == gitCompass.tags && gitCompass.hasRemote",
+          "group": "1_tag@0"
+        },
+        {
+          "command": "gitCompass.pinFileHistory",
+          "when": "view == gitCompass.fileHistory && !gitCompass.fileHistoryPinned",
+          "group": "navigation@1"
+        },
+        {
+          "command": "gitCompass.unpinFileHistory",
+          "when": "view == gitCompass.fileHistory && gitCompass.fileHistoryPinned",
+          "group": "navigation@1"
+        },
+        {
+          "command": "gitCompass.refresh",
+          "when": "view == gitCompass.fileHistory",
+          "group": "navigation@2"
+        },
+        {
+          "command": "gitCompass.compareRefs",
+          "when": "view == gitCompass.compare",
+          "group": "navigation@1"
+        },
+        {
+          "command": "gitCompass.swapCompare",
+          "when": "view == gitCompass.compare",
+          "group": "navigation@2"
+        },
+        {
+          "command": "gitCompass.clearCompare",
+          "when": "view == gitCompass.compare",
+          "group": "navigation@3"
+        },
+        {
+          "command": "gitCompass.refresh",
+          "when": "view == gitCompass.reflog",
+          "group": "navigation@1"
+        },
+        {
+          "command": "gitCompass.createPullRequest",
+          "when": "view == gitCompass.pullRequests && gitCompass.isGitHub",
+          "group": "navigation@1"
+        },
+        {
+          "command": "gitCompass.refreshPullRequests",
+          "when": "view == gitCompass.pullRequests",
+          "group": "navigation@2"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "gitCompass.unstageAll",
+          "when": "view == gitCompass.changes && viewItem =~ /^group;staged;/",
+          "group": "inline@1"
+        },
+        {
+          "command": "gitCompass.stageAll",
+          "when": "view == gitCompass.changes && viewItem =~ /^group;changes;/",
+          "group": "inline@2"
+        },
+        {
+          "command": "gitCompass.discardAll",
+          "when": "view == gitCompass.changes && viewItem =~ /^group;changes;/",
+          "group": "inline@1"
+        },
+        {
+          "command": "gitCompass.stash",
+          "when": "view == gitCompass.changes && viewItem =~ /^group;changes;/",
+          "group": "1_stash@0"
+        },
+        {
+          "command": "gitCompass.openFile",
+          "when": "view == gitCompass.changes && viewItem =~ /^file;/",
+          "group": "inline@0"
+        },
+        {
+          "command": "gitCompass.unstage",
+          "when": "view == gitCompass.changes && viewItem =~ /^file;staged;/",
+          "group": "inline@2"
+        },
+        {
+          "command": "gitCompass.discard",
+          "when": "view == gitCompass.changes && viewItem =~ /^file;unstaged;/",
+          "group": "inline@1"
+        },
+        {
+          "command": "gitCompass.stage",
+          "when": "view == gitCompass.changes && viewItem =~ /^file;unstaged;/",
+          "group": "inline@2"
+        },
+        {
+          "command": "gitCompass.markResolved",
+          "when": "view == gitCompass.changes && viewItem =~ /^file;conflict;/",
+          "group": "inline@2"
+        },
+        {
+          "command": "gitCompass.openFile",
+          "when": "view == gitCompass.changes && viewItem =~ /^file;/",
+          "group": "1_open@0"
+        },
+        {
+          "command": "gitCompass.fileHistory",
+          "when": "view == gitCompass.changes && viewItem =~ /^file;(staged|unstaged;(?!untracked))/",
+          "group": "1_open@1"
+        },
+        {
+          "command": "gitCompass.stage",
+          "when": "view == gitCompass.changes && viewItem =~ /^file;unstaged;/",
+          "group": "2_stage@0"
+        },
+        {
+          "command": "gitCompass.unstage",
+          "when": "view == gitCompass.changes && viewItem =~ /^file;staged;/",
+          "group": "2_stage@1"
+        },
+        {
+          "command": "gitCompass.discard",
+          "when": "view == gitCompass.changes && viewItem =~ /^file;unstaged;/",
+          "group": "2_stage@2"
+        },
+        {
+          "command": "gitCompass.acceptOurs",
+          "when": "view == gitCompass.changes && viewItem =~ /^file;conflict;/",
+          "group": "3_conflict@0"
+        },
+        {
+          "command": "gitCompass.acceptTheirs",
+          "when": "view == gitCompass.changes && viewItem =~ /^file;conflict;/",
+          "group": "3_conflict@1"
+        },
+        {
+          "command": "gitCompass.openMergeEditor",
+          "when": "view == gitCompass.changes && viewItem =~ /^file;conflict;/",
+          "group": "3_conflict@2"
+        },
+        {
+          "command": "gitCompass.markResolved",
+          "when": "view == gitCompass.changes && viewItem =~ /^file;conflict;/",
+          "group": "3_conflict@3"
+        },
+        {
+          "command": "gitCompass.addToGitignore",
+          "when": "view == gitCompass.changes && viewItem =~ /^file;unstaged;untracked;/",
+          "group": "4_ignore@0"
+        },
+        {
+          "command": "gitCompass.showCommit",
+          "when": "viewItem =~ /^commit;/",
+          "group": "inline@1"
+        },
+        {
+          "command": "gitCompass.showCommit",
+          "when": "viewItem =~ /^commit;/",
+          "group": "1_view@0"
+        },
+        {
+          "command": "gitCompass.compareWithHead",
+          "when": "viewItem =~ /^commit;/",
+          "group": "1_view@1"
+        },
+        {
+          "command": "gitCompass.compareCommitWithWorkingTree",
+          "when": "viewItem =~ /^commit;/",
+          "group": "1_view@2"
+        },
+        {
+          "command": "gitCompass.openCommitOnGitHub",
+          "when": "viewItem =~ /^commit;/ && gitCompass.isGitHub",
+          "group": "1_view@3"
+        },
+        {
+          "command": "gitCompass.checkoutCommit",
+          "when": "viewItem =~ /^commit;/",
+          "group": "2_branch@0"
+        },
+        {
+          "command": "gitCompass.createBranchAt",
+          "when": "viewItem =~ /^commit;/",
+          "group": "2_branch@1"
+        },
+        {
+          "command": "gitCompass.createTagAt",
+          "when": "viewItem =~ /^commit;/",
+          "group": "2_branch@2"
+        },
+        {
+          "command": "gitCompass.cherryPick",
+          "when": "viewItem =~ /^commit;(?!.*head;)/",
+          "group": "3_change@0"
+        },
+        {
+          "command": "gitCompass.revert",
+          "when": "viewItem =~ /^commit;/",
+          "group": "3_change@1"
+        },
+        {
+          "command": "gitCompass.resetTo",
+          "when": "viewItem =~ /^commit;/",
+          "group": "3_change@2"
+        },
+        {
+          "command": "gitCompass.interactiveRebase",
+          "when": "viewItem =~ /^commit;/",
+          "group": "3_change@3"
+        },
+        {
+          "command": "gitCompass.undoLastCommit",
+          "when": "viewItem =~ /^commit;.*head;/",
+          "group": "4_head@0"
+        },
+        {
+          "command": "gitCompass.editLastCommitMessage",
+          "when": "viewItem =~ /^commit;.*head;/",
+          "group": "4_head@1"
+        },
+        {
+          "command": "gitCompass.restoreFileFromCommit",
+          "when": "viewItem =~ /^commit;.*fileHistory;/",
+          "group": "5_file@0"
+        },
+        {
+          "command": "gitCompass.copySha",
+          "when": "viewItem =~ /^commit;/",
+          "group": "9_copy@0"
+        },
+        {
+          "command": "gitCompass.copyMessage",
+          "when": "viewItem =~ /^commit;/",
+          "group": "9_copy@1"
+        },
+        {
+          "command": "gitCompass.openFileAtRevision",
+          "when": "viewItem =~ /^commitFile;/",
+          "group": "inline@1"
+        },
+        {
+          "command": "gitCompass.openCommitFileDiff",
+          "when": "viewItem =~ /^commitFile;/",
+          "group": "1_open@0"
+        },
+        {
+          "command": "gitCompass.openFileAtRevision",
+          "when": "viewItem =~ /^commitFile;/",
+          "group": "1_open@1"
+        },
+        {
+          "command": "gitCompass.fileHistory",
+          "when": "viewItem =~ /^commitFile;/",
+          "group": "1_open@2"
+        },
+        {
+          "command": "gitCompass.restoreFileFromCommit",
+          "when": "viewItem =~ /^commitFile;/",
+          "group": "2_restore@0"
+        },
+        {
+          "command": "gitCompass.createBranch",
+          "when": "view == gitCompass.branches && viewItem =~ /^branchGroup;local;/",
+          "group": "inline@1"
+        },
+        {
+          "command": "gitCompass.pushBranch",
+          "when": "view == gitCompass.branches && viewItem =~ /^branch;local;current;/",
+          "group": "inline@1"
+        },
+        {
+          "command": "gitCompass.checkout",
+          "when": "view == gitCompass.branches && viewItem =~ /^branch;(local;(?!current)|remote;)/",
+          "group": "inline@1"
+        },
+        {
+          "command": "gitCompass.merge",
+          "when": "view == gitCompass.branches && viewItem =~ /^branch;(local;(?!current)|remote;)/",
+          "group": "inline@2"
+        },
+        {
+          "command": "gitCompass.checkout",
+          "when": "view == gitCompass.branches && viewItem =~ /^branch;(local;(?!current)|remote;)/",
+          "group": "1_switch@0"
+        },
+        {
+          "command": "gitCompass.merge",
+          "when": "view == gitCompass.branches && viewItem =~ /^branch;(local;(?!current)|remote;)/",
+          "group": "2_combine@0"
+        },
+        {
+          "command": "gitCompass.rebaseOnto",
+          "when": "view == gitCompass.branches && viewItem =~ /^branch;(local;(?!current)|remote;)/",
+          "group": "2_combine@1"
+        },
+        {
+          "command": "gitCompass.compareWithCurrent",
+          "when": "view == gitCompass.branches && viewItem =~ /^branch;(local;(?!current)|remote;)/",
+          "group": "3_compare@0"
+        },
+        {
+          "command": "gitCompass.createBranchAt",
+          "when": "view == gitCompass.branches && viewItem =~ /^branch;/",
+          "group": "4_create@0"
+        },
+        {
+          "command": "gitCompass.createPullRequest",
+          "when": "view == gitCompass.branches && viewItem =~ /^branch;local;/ && gitCompass.isGitHub",
+          "group": "4_create@1"
+        },
+        {
+          "command": "gitCompass.pushBranch",
+          "when": "view == gitCompass.branches && viewItem =~ /^branch;local;/",
+          "group": "5_remote@0"
+        },
+        {
+          "command": "gitCompass.publishBranch",
+          "when": "view == gitCompass.branches && viewItem =~ /^branch;local;current;untracked;/",
+          "group": "5_remote@1"
+        },
+        {
+          "command": "gitCompass.setUpstream",
+          "when": "view == gitCompass.branches && viewItem =~ /^branch;local;/",
+          "group": "5_remote@2"
+        },
+        {
+          "command": "gitCompass.openBranchOnGitHub",
+          "when": "view == gitCompass.branches && viewItem =~ /^branch;(remote;|local;.*tracking;)/ && gitCompass.isGitHub",
+          "group": "5_remote@3"
+        },
+        {
+          "command": "gitCompass.renameBranch",
+          "when": "view == gitCompass.branches && viewItem =~ /^branch;local;/",
+          "group": "6_edit@0"
+        },
+        {
+          "command": "gitCompass.deleteBranch",
+          "when": "view == gitCompass.branches && viewItem =~ /^branch;(local;(?!current)|remote;)/",
+          "group": "6_edit@1"
+        },
+        {
+          "command": "gitCompass.fetchRemote",
+          "when": "view == gitCompass.branches && viewItem =~ /^remote;/",
+          "group": "inline@1"
+        },
+        {
+          "command": "gitCompass.fetchRemote",
+          "when": "view == gitCompass.branches && viewItem =~ /^remote;/",
+          "group": "1_remote@0"
+        },
+        {
+          "command": "gitCompass.removeRemote",
+          "when": "view == gitCompass.branches && viewItem =~ /^remote;/",
+          "group": "1_remote@1"
+        },
+        {
+          "command": "gitCompass.openWorktreeNewWindow",
+          "when": "view == gitCompass.worktrees && viewItem =~ /^worktree;(?!.*current;)(?!.*prunable;)/",
+          "group": "inline@1"
+        },
+        {
+          "command": "gitCompass.removeWorktree",
+          "when": "view == gitCompass.worktrees && viewItem =~ /^worktree;(?!main;)(?!.*current;)/",
+          "group": "inline@2"
+        },
+        {
+          "command": "gitCompass.openWorktreeNewWindow",
+          "when": "view == gitCompass.worktrees && viewItem =~ /^worktree;(?!.*current;)(?!.*prunable;)/",
+          "group": "1_open@0"
+        },
+        {
+          "command": "gitCompass.openWorktreeHere",
+          "when": "view == gitCompass.worktrees && viewItem =~ /^worktree;(?!.*current;)(?!.*prunable;)/",
+          "group": "1_open@1"
+        },
+        {
+          "command": "gitCompass.addWorktreeToWorkspace",
+          "when": "view == gitCompass.worktrees && viewItem =~ /^worktree;(?!.*current;)(?!.*prunable;)/",
+          "group": "1_open@2"
+        },
+        {
+          "command": "gitCompass.revealWorktree",
+          "when": "view == gitCompass.worktrees && viewItem =~ /^worktree;(?!.*prunable;)/",
+          "group": "1_open@3"
+        },
+        {
+          "command": "gitCompass.lockWorktree",
+          "when": "view == gitCompass.worktrees && viewItem =~ /^worktree;(?!main;)(?!.*locked;)/",
+          "group": "2_lock@0"
+        },
+        {
+          "command": "gitCompass.unlockWorktree",
+          "when": "view == gitCompass.worktrees && viewItem =~ /^worktree;.*locked;/",
+          "group": "2_lock@1"
+        },
+        {
+          "command": "gitCompass.removeWorktree",
+          "when": "view == gitCompass.worktrees && viewItem =~ /^worktree;(?!main;)(?!.*current;)/",
+          "group": "3_remove@0"
+        },
+        {
+          "command": "gitCompass.pruneWorktrees",
+          "when": "view == gitCompass.worktrees && viewItem =~ /^worktree;.*prunable;/",
+          "group": "3_remove@1"
+        },
+        {
+          "command": "gitCompass.createWorktree",
+          "when": "view == gitCompass.branches && viewItem =~ /^branch;(local;(?!current)|remote;)/",
+          "group": "4_create@2"
+        },
+        {
+          "command": "gitCompass.createWorktree",
+          "when": "view == gitCompass.tags && viewItem =~ /^tag;/",
+          "group": "1_tag@3"
+        },
+        {
+          "command": "gitCompass.createWorktree",
+          "when": "viewItem =~ /^commit;/",
+          "group": "2_branch@3"
+        },
+        {
+          "command": "gitCompass.checkout",
+          "when": "view == gitCompass.tags && viewItem =~ /^tag;/",
+          "group": "1_tag@0"
+        },
+        {
+          "command": "gitCompass.createBranchAt",
+          "when": "view == gitCompass.tags && viewItem =~ /^tag;/",
+          "group": "1_tag@1"
+        },
+        {
+          "command": "gitCompass.compareWithCurrent",
+          "when": "view == gitCompass.tags && viewItem =~ /^tag;/",
+          "group": "1_tag@2"
+        },
+        {
+          "command": "gitCompass.pushTag",
+          "when": "view == gitCompass.tags && viewItem =~ /^tag;/ && gitCompass.hasRemote",
+          "group": "2_tag@0"
+        },
+        {
+          "command": "gitCompass.pushTag",
+          "when": "view == gitCompass.tags && viewItem =~ /^tag;/ && gitCompass.hasRemote",
+          "group": "inline@1"
+        },
+        {
+          "command": "gitCompass.deleteTag",
+          "when": "view == gitCompass.tags && viewItem =~ /^tag;/",
+          "group": "2_tag@1"
+        },
+        {
+          "command": "gitCompass.applyStash",
+          "when": "view == gitCompass.stashes && viewItem =~ /^stash;/",
+          "group": "inline@1"
+        },
+        {
+          "command": "gitCompass.popStash",
+          "when": "view == gitCompass.stashes && viewItem =~ /^stash;/",
+          "group": "inline@2"
+        },
+        {
+          "command": "gitCompass.dropStash",
+          "when": "view == gitCompass.stashes && viewItem =~ /^stash;/",
+          "group": "inline@3"
+        },
+        {
+          "command": "gitCompass.applyStash",
+          "when": "view == gitCompass.stashes && viewItem =~ /^stash;/",
+          "group": "1_stash@0"
+        },
+        {
+          "command": "gitCompass.popStash",
+          "when": "view == gitCompass.stashes && viewItem =~ /^stash;/",
+          "group": "1_stash@1"
+        },
+        {
+          "command": "gitCompass.branchFromStash",
+          "when": "view == gitCompass.stashes && viewItem =~ /^stash;/",
+          "group": "1_stash@2"
+        },
+        {
+          "command": "gitCompass.dropStash",
+          "when": "view == gitCompass.stashes && viewItem =~ /^stash;/",
+          "group": "2_stash@0"
+        },
+        {
+          "command": "gitCompass.swapCompare",
+          "when": "view == gitCompass.compare && viewItem =~ /^compareHeader;/",
+          "group": "inline@1"
+        },
+        {
+          "command": "gitCompass.clearCompare",
+          "when": "view == gitCompass.compare && viewItem =~ /^compareHeader;/",
+          "group": "inline@2"
+        },
+        {
+          "command": "gitCompass.restoreToPoint",
+          "when": "view == gitCompass.reflog && viewItem =~ /^reflog;/",
+          "group": "inline@1"
+        },
+        {
+          "command": "gitCompass.restoreToPoint",
+          "when": "view == gitCompass.reflog && viewItem =~ /^reflog;/",
+          "group": "1_reflog@0"
+        },
+        {
+          "command": "gitCompass.createBranchAt",
+          "when": "view == gitCompass.reflog && viewItem =~ /^reflog;/",
+          "group": "1_reflog@1"
+        },
+        {
+          "command": "gitCompass.showCommit",
+          "when": "view == gitCompass.reflog && viewItem =~ /^reflog;/",
+          "group": "2_view@0"
+        },
+        {
+          "command": "gitCompass.copySha",
+          "when": "view == gitCompass.reflog && viewItem =~ /^reflog;/",
+          "group": "9_copy@0"
+        },
+        {
+          "command": "gitCompass.checkoutPullRequest",
+          "when": "view == gitCompass.pullRequests && viewItem =~ /^pr;/",
+          "group": "inline@1"
+        },
+        {
+          "command": "gitCompass.openPullRequest",
+          "when": "view == gitCompass.pullRequests && viewItem =~ /^pr;/",
+          "group": "inline@2"
+        },
+        {
+          "command": "gitCompass.checkoutPullRequest",
+          "when": "view == gitCompass.pullRequests && viewItem =~ /^pr;/",
+          "group": "1_pr@0"
+        },
+        {
+          "command": "gitCompass.openPullRequest",
+          "when": "view == gitCompass.pullRequests && viewItem =~ /^pr;/",
+          "group": "1_pr@1"
+        },
+        {
+          "command": "gitCompass.copyPullRequestLink",
+          "when": "view == gitCompass.pullRequests && viewItem =~ /^pr;/",
+          "group": "1_pr@2"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "gitCompass.fileHistory",
+          "when": "gitCompass.hasRepo && resourceScheme == file",
+          "group": "1_gitCompass@1"
+        },
+        {
+          "command": "gitCompass.toggleFileBlame",
+          "when": "gitCompass.hasRepo && resourceScheme == file",
+          "group": "1_gitCompass@2"
+        },
+        {
+          "command": "gitCompass.compareFileWith",
+          "when": "gitCompass.hasRepo && resourceScheme == file",
+          "group": "1_gitCompass@3"
+        },
+        {
+          "command": "gitCompass.openFileOnGitHub",
+          "when": "gitCompass.isGitHub && resourceScheme == file",
+          "group": "1_gitCompass@4"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "gitCompass.stageSelectedLines",
+          "when": "gitCompass.hasRepo && editorHasSelection && resourceScheme == file",
+          "group": "9_gitCompass@0"
+        },
+        {
+          "command": "gitCompass.revertSelectedLines",
+          "when": "gitCompass.hasRepo && editorHasSelection && resourceScheme == file",
+          "group": "9_gitCompass@1"
+        },
+        {
+          "command": "gitCompass.fileHistory",
+          "when": "gitCompass.hasRepo && resourceScheme == file",
+          "group": "9_gitCompass@2"
+        },
+        {
+          "command": "gitCompass.toggleFileBlame",
+          "when": "gitCompass.hasRepo && resourceScheme == file",
+          "group": "9_gitCompass@3"
+        },
+        {
+          "command": "gitCompass.openFileOnGitHub",
+          "when": "gitCompass.isGitHub && resourceScheme == file",
+          "group": "9_gitCompass@4"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "gitCompass.fileHistory",
+          "when": "gitCompass.hasRepo && !explorerResourceIsFolder",
+          "group": "9_gitCompass@0"
+        },
+        {
+          "command": "gitCompass.compareFileWith",
+          "when": "gitCompass.hasRepo && !explorerResourceIsFolder",
+          "group": "9_gitCompass@1"
+        },
+        {
+          "command": "gitCompass.openFileOnGitHub",
+          "when": "gitCompass.isGitHub && !explorerResourceIsFolder",
+          "group": "9_gitCompass@2"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "command": "gitCompass.fileHistory",
+          "when": "gitCompass.hasRepo && resourceScheme == file",
+          "group": "9_gitCompass@0"
+        }
+      ],
+      "webview/context": [
+        {
+          "command": "gitCompass.checkoutCommit",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && webviewSection == commit",
+          "group": "1_branch@0"
+        },
+        {
+          "command": "gitCompass.createBranchAt",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && webviewSection == commit",
+          "group": "1_branch@1"
+        },
+        {
+          "command": "gitCompass.createTagAt",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && webviewSection == commit",
+          "group": "1_branch@2"
+        },
+        {
+          "command": "gitCompass.cherryPick",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && webviewSection == commit",
+          "group": "2_change@0"
+        },
+        {
+          "command": "gitCompass.revert",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && webviewSection == commit",
+          "group": "2_change@1"
+        },
+        {
+          "command": "gitCompass.resetTo",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && webviewSection == commit",
+          "group": "2_change@2"
+        },
+        {
+          "command": "gitCompass.interactiveRebase",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && webviewSection == commit",
+          "group": "2_change@3"
+        },
+        {
+          "command": "gitCompass.compareWithHead",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && webviewSection == commit",
+          "group": "3_compare@0"
+        },
+        {
+          "command": "gitCompass.compareCommitWithWorkingTree",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && webviewSection == commit",
+          "group": "3_compare@1"
+        },
+        {
+          "command": "gitCompass.openCommitOnGitHub",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && webviewSection == commit && gitCompass.isGitHub",
+          "group": "3_compare@2"
+        },
+        {
+          "command": "gitCompass.copySha",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && webviewSection == commit",
+          "group": "9_copy@0"
+        },
+        {
+          "command": "gitCompass.copyMessage",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && webviewSection == commit",
+          "group": "9_copy@1"
+        },
+        {
+          "command": "gitCompass.checkout",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && (webviewSection == branch || webviewSection == remoteBranch || webviewSection == tag)",
+          "group": "1_branch@0"
+        },
+        {
+          "command": "gitCompass.merge",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && (webviewSection == branch || webviewSection == remoteBranch)",
+          "group": "2_combine@0"
+        },
+        {
+          "command": "gitCompass.rebaseOnto",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && (webviewSection == branch || webviewSection == remoteBranch)",
+          "group": "2_combine@1"
+        },
+        {
+          "command": "gitCompass.compareWithCurrent",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && (webviewSection == branch || webviewSection == remoteBranch || webviewSection == tag)",
+          "group": "3_compare@0"
+        },
+        {
+          "command": "gitCompass.createBranchAt",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && (webviewSection == branch || webviewSection == currentBranch || webviewSection == remoteBranch || webviewSection == tag)",
+          "group": "4_create@0"
+        },
+        {
+          "command": "gitCompass.createPullRequest",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && (webviewSection == branch || webviewSection == currentBranch) && gitCompass.isGitHub",
+          "group": "4_create@1"
+        },
+        {
+          "command": "gitCompass.createWorktree",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && (webviewSection == branch || webviewSection == remoteBranch || webviewSection == tag)",
+          "group": "4_create@2"
+        },
+        {
+          "command": "gitCompass.createWorktree",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && webviewSection == commit",
+          "group": "1_branch@3"
+        },
+        {
+          "command": "gitCompass.pushBranch",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && (webviewSection == branch || webviewSection == currentBranch)",
+          "group": "5_remote@0"
+        },
+        {
+          "command": "gitCompass.openBranchOnGitHub",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && (webviewSection == branch || webviewSection == currentBranch || webviewSection == remoteBranch) && gitCompass.isGitHub",
+          "group": "5_remote@1"
+        },
+        {
+          "command": "gitCompass.pushTag",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && webviewSection == tag",
+          "group": "5_remote@2"
+        },
+        {
+          "command": "gitCompass.renameBranch",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && (webviewSection == branch || webviewSection == currentBranch)",
+          "group": "6_edit@0"
+        },
+        {
+          "command": "gitCompass.deleteBranch",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && (webviewSection == branch || webviewSection == remoteBranch)",
+          "group": "6_edit@1"
+        },
+        {
+          "command": "gitCompass.deleteTag",
+          "when": "(webviewId == 'gitCompass.graph' || webviewId == 'gitCompass.graphView') && webviewSection == tag",
+          "group": "6_edit@2"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Git Compass",
+      "properties": {
+        "gitCompass.smartCommit": {
+          "type": "string",
+          "enum": [
+            "ask",
+            "always",
+            "never"
+          ],
+          "default": "ask",
+          "enumDescriptions": [
+            "Ask whether to commit all changes when nothing is staged",
+            "Always commit all changes when nothing is staged",
+            "Never — require staging first"
+          ],
+          "markdownDescription": "What happens when you press **Commit** and no files are staged."
+        },
+        "gitCompass.pullStrategy": {
+          "type": "string",
+          "enum": [
+            "merge",
+            "rebase",
+            "ff-only"
+          ],
+          "default": "merge",
+          "enumDescriptions": [
+            "Merge remote commits into yours (safest, default)",
+            "Replay your commits on top of the remote ones (linear history)",
+            "Only fast-forward; stop if branches diverged"
+          ],
+          "description": "How Pull/Sync combines remote commits with yours."
+        },
+        "gitCompass.autoFetch": {
+          "type": "number",
+          "default": 10,
+          "minimum": 0,
+          "description": "Fetch from remotes automatically every N minutes (0 = off) so the Overview can tell you when new commits are available."
+        },
+        "gitCompass.viewAsTree": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show changed files as a folder tree instead of a flat list."
+        },
+        "gitCompass.switchToNewBranch": {
+          "type": "boolean",
+          "default": true,
+          "description": "Switch to a branch right after creating it."
+        },
+        "gitCompass.followActiveEditor": {
+          "type": "boolean",
+          "default": true,
+          "description": "With several repositories open, automatically switch to the repository of the file you are editing."
+        },
+        "gitCompass.scanNestedRepositories": {
+          "type": "boolean",
+          "default": true,
+          "description": "Also look for repositories one folder level below each workspace folder."
+        },
+        "gitCompass.blame.currentLine": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show who last changed the current line (faint text at the end of the line)."
+        },
+        "gitCompass.blame.hover": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show commit details when hovering the blame annotation."
+        },
+        "gitCompass.blame.maxLines": {
+          "type": "number",
+          "default": 20000,
+          "description": "Skip blame for files longer than this."
+        },
+        "gitCompass.graph.pageSize": {
+          "type": "number",
+          "default": 400,
+          "description": "Number of commits loaded at once in the Commit Graph editor tab."
+        },
+        "gitCompass.graph.sidebarPageSize": {
+          "type": "number",
+          "default": 150,
+          "description": "Number of commits loaded at once in the sidebar Graph view."
+        },
+        "gitCompass.fileHistory.maxCount": {
+          "type": "number",
+          "default": 200,
+          "description": "Maximum number of commits shown in File History."
+        },
+        "gitCompass.statusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show branch / push / pull status in the status bar."
+        },
+        "gitCompass.useVSCodeGitForNetwork": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use VS Code's built-in Git for push/pull/fetch so GitHub sign-in and credential prompts work automatically. Turn off to always use the git command line."
+        },
+        "gitCompass.gitPath": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "description": "Path to the git executable. Leave empty to auto-detect."
+        }
+      }
+    },
+    "walkthroughs": [
+      {
+        "id": "gitCompass.welcome",
+        "title": "Get started with Git Compass",
+        "description": "Learn Git step by step with your new Git cockpit.",
+        "steps": [
+          {
+            "id": "open",
+            "title": "Meet Git Compass",
+            "description": "Everything lives behind the compass icon in the activity bar.\n[Open Git Compass](command:gitCompass.overview.focus)",
+            "media": {
+              "markdown": "media/walkthrough/open.md"
+            },
+            "completionEvents": [
+              "onView:gitCompass.overview"
+            ]
+          },
+          {
+            "id": "identity",
+            "title": "Tell Git who you are",
+            "description": "Every commit records an author. Set your name and email once per computer.\n[Set Name & Email](command:gitCompass.setIdentity)",
+            "media": {
+              "markdown": "media/walkthrough/identity.md"
+            },
+            "completionEvents": [
+              "onCommand:gitCompass.setIdentity"
+            ]
+          },
+          {
+            "id": "repo",
+            "title": "Get a repository",
+            "description": "Turn the current folder into a repository, or download one.\n[Initialize Repository](command:gitCompass.init)\n[Clone Repository](command:gitCompass.clone)",
+            "media": {
+              "markdown": "media/walkthrough/repo.md"
+            },
+            "completionEvents": [
+              "onContext:gitCompass.hasRepo"
+            ]
+          },
+          {
+            "id": "commit",
+            "title": "Make a commit",
+            "description": "Review your changes, write a message, press Commit.\n[Go to Commit box](command:gitCompass.overview.focus)",
+            "media": {
+              "markdown": "media/walkthrough/commit.md"
+            },
+            "completionEvents": [
+              "onCommand:gitCompass.commit"
+            ]
+          },
+          {
+            "id": "github",
+            "title": "Back it up on GitHub",
+            "description": "Sign in and publish your repository (private or public).\n[Publish to GitHub](command:gitCompass.publishToGitHub)",
+            "media": {
+              "markdown": "media/walkthrough/github.md"
+            },
+            "completionEvents": [
+              "onCommand:gitCompass.publishToGitHub"
+            ]
+          },
+          {
+            "id": "branch",
+            "title": "Try a branch",
+            "description": "Work on a feature without touching main, then merge it.\n[Create a Branch](command:gitCompass.createBranch)",
+            "media": {
+              "markdown": "media/walkthrough/branch.md"
+            },
+            "completionEvents": [
+              "onCommand:gitCompass.createBranch"
+            ]
+          },
+          {
+            "id": "graph",
+            "title": "See the big picture",
+            "description": "The Commit Graph shows every branch and commit.\n[Open Commit Graph](command:gitCompass.openGraph)",
+            "media": {
+              "markdown": "media/walkthrough/graph.md"
+            },
+            "completionEvents": [
+              "onCommand:gitCompass.openGraph"
+            ]
+          },
+          {
+            "id": "guide",
+            "title": "Keep the guide handy",
+            "description": "Undo cheat-sheet, conflicts, glossary and more.\n[Open Guide](command:gitCompass.openGuide)",
+            "media": {
+              "markdown": "media/walkthrough/guide.md"
+            },
+            "completionEvents": [
+              "onCommand:gitCompass.openGuide"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

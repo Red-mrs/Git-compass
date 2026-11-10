@@ -1,0 +1,74 @@
+body { padding: 8px 10px 14px; }
+
+.card {
+  background: var(--gc-card);
+  border: 1px solid var(--gc-border);
+  border-radius: 6px;
+  padding: 9px 10px;
+  margin-bottom: 9px;
+}
+
+.repo-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.repo-row select { flex: 1; min-width: 0; }
+
+.branch-line { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.branch-name { font-weight: 600; font-size: 1.1em; display: inline-flex; align-items: center; gap: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.branch-name .ico { color: var(--gc-green); width: 16px; height: 16px; }
+.branch-name.detached .ico { color: var(--gc-orange); }
+.sync-line { margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 0.95em; }
+.sync-line span { display: inline-flex; align-items: center; gap: 2px; }
+.ahead { color: var(--gc-orange); font-weight: 600; }
+.behind { color: var(--gc-blue); font-weight: 600; }
+.insync { color: var(--gc-green); }
+.last { margin-top: 4px; font-size: 0.9em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.buttons { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+.buttons button { flex: 1 1 auto; }
+.buttons button.icononly { flex: 0 0 auto; }
+
+.banner.warn { border-color: var(--gc-orange); background: color-mix(in srgb, var(--gc-orange) 12%, transparent); }
+.banner .ico { color: var(--gc-orange); }
+.conf { color: var(--gc-red); font-weight: 600; }
+
+.suggest {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding: 7px 9px;
+  margin-bottom: 9px;
+  border-radius: 6px;
+  border-left: 3px solid var(--gc-blue);
+  background: color-mix(in srgb, var(--gc-blue) 10%, transparent);
+  font-size: 0.95em;
+}
+.suggest > span:nth-child(2) { flex: 1 1 160px; }
+.suggest.ok { border-left-color: var(--gc-green); background: color-mix(in srgb, var(--gc-green) 10%, transparent); }
+.suggest.warn { border-left-color: var(--gc-orange); background: color-mix(in srgb, var(--gc-orange) 10%, transparent); }
+.suggest .sicon { padding-top: 1px; }
+.suggest.ok .sicon { color: var(--gc-green); }
+.suggest.warn .sicon { color: var(--gc-orange); }
+.suggest.info .sicon { color: var(--gc-blue); }
+.suggest button.link { margin-left: auto; font-weight: 600; }
+
+.commit-head { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; margin-bottom: 6px; flex-wrap: wrap; }
+.commit-head .title { font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
+.counts { font-size: 0.9em; }
+.c-staged { color: var(--gc-green); font-weight: 600; }
+textarea { width: 100%; resize: vertical; min-height: 54px; display: block; }
+.msg-hint { font-size: 0.85em; color: var(--gc-muted); min-height: 1.2em; margin-top: 2px; }
+.msg-hint .warn { color: var(--gc-orange); }
+.amend { display: block; font-size: 0.9em; margin: 4px 0 2px; cursor: pointer; }
+.amend input { vertical-align: -2px; margin: 0 4px 0 0; }
+.commit-buttons { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.commit-buttons button { flex: 1 1 auto; }
+
+.section-title { font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gc-muted); margin: 12px 0 6px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 6px; }
+.grid button { justify-content: flex-start; }
+
+.footer { margin-top: 12px; font-size: 0.9em; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+
+.welcome h3 { margin: 2px 0 6px; display: flex; align-items: center; gap: 6px; }
+.stack { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+.stack button { justify-content: flex-start; }

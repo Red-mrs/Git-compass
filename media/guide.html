@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="{{csp}}">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git Compass Guide</title>
+<link rel="stylesheet" href="{{common.css}}">
+<link rel="stylesheet" href="{{guide.css}}">
+</head>
+<body>
+<nav id="toc">
+  <div class="brand">🧭 Git Compass</div>
+  <a href="#start">Welcome &amp; panel map</a>
+  <a href="#concepts">Git in 3 minutes</a>
+  <a href="#first-steps">Your first repository</a>
+  <a href="#daily">Everyday workflow</a>
+  <a href="#branches">Branches</a>
+  <a href="#sync">Remote: fetch, pull, push</a>
+  <a href="#conflicts">Resolving conflicts</a>
+  <a href="#undo">Undo anything</a>
+  <a href="#stash">Stash</a>
+  <a href="#worktrees">Worktrees</a>
+  <a href="#history">Exploring history</a>
+  <a href="#rewrite">Rewriting history</a>
+  <a href="#github">GitHub</a>
+  <a href="#messages">Good commit messages</a>
+  <a href="#glossary">Glossary</a>
+  <a href="#cli">Behind the buttons (git commands)</a>
+  <a href="#tips">Tips &amp; settings</a>
+</nav>
+
+<main>
+
+<section id="start">
+  <h1>Welcome to Git Compass 🧭</h1>
+  <p class="lead">Git Compass is your personal Git cockpit. Everything lives in the <b>compass icon</b> on the left activity bar. This guide explains Git from zero
+    and shows where each action is. Buttons like <button class="mini" data-cmd="gitCompass.openGraph">Open Commit Graph</button> run the action directly.</p>
+
+  <h2>The panel, top to bottom</h2>
+  <table class="map">
+    <tr><td>🏠 <b>Overview</b></td><td>Your current branch, whether you need to push/pull, a <b>suggestion for the next step</b>, the <b>commit box</b> and quick actions. Start here.</td></tr>
+    <tr><td>📝 <b>Changes</b></td><td>Files you changed. <b>+</b> stages a file, <b>−</b> unstages, <b>↶</b> discards. Click a file to see exactly what changed (diff).</td></tr>
+    <tr><td>🌳 <b>Graph</b></td><td>A compact commit graph of all branches right in the sidebar. Click a commit to unfold its details and files; right-click for actions; the graph button opens the big version.</td></tr>
+    <tr><td>🕑 <b>Commits</b></td><td>History of the current branch. <span class="orange">Orange ↑</span> = not pushed yet, <span class="blue">blue ↓</span> = waiting on the server (pull). Expand a commit to see its files.</td></tr>
+    <tr><td>🌿 <b>Branches</b></td><td>Local branches (on your computer) and remote branches (on GitHub). Right-click for switch, merge, rebase, rename, delete, pull request…</td></tr>
+    <tr><td>🗂 <b>Worktrees</b></td><td>Extra folders of the same repository, each with a different branch checked out — work on two branches at the same time.</td></tr>
+    <tr><td>📦 <b>Stashes</b></td><td>Changes you put aside for later.</td></tr>
+    <tr><td>🏷 <b>Tags</b></td><td>Named markers on commits, e.g. <code>v1.0</code>.</td></tr>
+    <tr><td>📄 <b>File History</b></td><td>Every commit that changed the file you have open.</td></tr>
+    <tr><td>↔ <b>Compare</b></td><td>Differences between two branches / commits, or a branch and your current files.</td></tr>
+    <tr><td>⏪ <b>Undo History</b></td><td>Every step you did (commit, switch, reset, merge…). You can <b>go back to any point</b> — Git's safety net.</td></tr>
+    <tr><td>🔀 <b>Pull Requests</b></td><td>Open GitHub pull requests: view changed files, check them out, create new ones.</td></tr>
+  </table>
+  <p>Also: the <b>Commit Graph</b> (a visual map of all branches) <button class="mini" data-cmd="gitCompass.openGraph">open</button>,
+    <b>inline blame</b> (who changed the current line — shown faintly at the end of the line), and the status bar item at the bottom-left showing your branch.</p>
+  <div class="tip">💡 Hover over almost anything — buttons, files, commits, branches — for an explanation. Right-click items for more actions.</div>
+</section>
+
+<section id="concepts">
+  <h1>Git in 3 minutes</h1>
+  <p>Git is a <b>time machine for your project folder</b>. Whenever you want, you save a <b>snapshot</b> (a <i>commit</i>) of your files. You can look at old snapshots,
+    compare them, undo changes, work on several ideas in parallel (<i>branches</i>), and copy snapshots to/from a server like GitHub (<i>push/pull</i>).</p>
+
+  <h2>The four places your work lives</h2>
+  <svg class="diagram" viewBox="0 0 760 190" role="img" aria-label="Working folder, staging area, local repository, remote">
+    <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker></defs>
+    <g class="box b1"><rect x="10" y="40" width="160" height="80" rx="10"/><text x="90" y="72">Working folder</text><text x="90" y="94" class="small">your files as you edit them</text></g>
+    <g class="box b2"><rect x="200" y="40" width="160" height="80" rx="10"/><text x="280" y="72">Staging area</text><text x="280" y="94" class="small">"ready for the next commit"</text></g>
+    <g class="box b3"><rect x="390" y="40" width="160" height="80" rx="10"/><text x="470" y="72">Local repository</text><text x="470" y="94" class="small">commits on your computer</text></g>
+    <g class="box b4"><rect x="590" y="40" width="160" height="80" rx="10"/><text x="670" y="72">Remote (GitHub)</text><text x="670" y="94" class="small">shared copy on a server</text></g>
+    <path d="M170 60 H200" class="flow" marker-end="url(#ar)"/><text x="185" y="34" class="lbl">stage +</text>
+    <path d="M360 60 H390" class="flow" marker-end="url(#ar)"/><text x="375" y="34" class="lbl">commit</text>
+    <path d="M550 60 H590" class="flow" marker-end="url(#ar)"/><text x="570" y="34" class="lbl">push ↑</text>
+    <path d="M590 105 C 450 175, 250 175, 90 122" class="flow back" marker-end="url(#ar)"/><text x="350" y="178" class="lbl">pull ↓ (fetch + merge into your files)</text>
+  </svg>
+  <ol>
+    <li><b>Working folder</b> — the normal files you edit. Git notices every change (they appear in <b>Changes</b>).</li>
+    <li><b>Staging area</b> — you pick which changes go into the next snapshot. Think of it as a shopping basket. (Don't want to bother? Just press Commit — Git Compass offers to commit everything.)</li>
+    <li><b>Commit</b> — a saved snapshot with a message, author and date. Commits are permanent and can always be returned to.</li>
+    <li><b>Remote</b> — a copy of the repository on a server (GitHub). <b>Push</b> uploads your commits, <b>Pull</b> downloads others' commits.</li>
+  </ol>
+  <div class="tip">💡 Committing is local and instant. Nothing goes to GitHub until you <b>Push</b> (or Sync).</div>
+</section>
+
+<section id="first-steps">
+  <h1>Your first repository</h1>
+  <h2>A) Start tracking an existing folder</h2>
+  <ol>
+    <li>Open the folder in VS Code (<i>File → Open Folder</i>).</li>
+    <li>In Git Compass press <button class="mini" data-cmd="gitCompass.init">Initialize repository</button>.</li>
+    <li>Tell Git who you are (once per computer): <button class="mini" data-cmd="gitCompass.setIdentity">Set name &amp; email</button>. Use the email of your GitHub account.</li>
+    <li>Write a message like <i>"Initial version"</i> in the Overview and press <b>Commit</b>.</li>
+    <li>Optional: back it up on GitHub with <button class="mini" data-cmd="gitCompass.publishToGitHub">Publish to GitHub</button> — choose <b>Private</b> if only you should see it.</li>
+  </ol>
+  <div class="tip">💡 Shortcut: <button class="mini" data-cmd="gitCompass.publishToGitHub">Publish to GitHub</button> works from <b>any</b> folder —
+    it sets up Git, commits your files (after showing what will be uploaded), creates a new private or public GitHub repository and uploads everything in one go.
+    If the folder already has a remote called <code>origin</code> (e.g. a school GitLab), it is kept and GitHub is added as <code>github</code>.</div>
+  <h2>B) Download an existing repository</h2>
+  <p><button class="mini" data-cmd="gitCompass.clone">Clone a repository</button> — pick one of your GitHub repositories (after signing in) or paste a URL. VS Code asks where to save it and opens it.</p>
+  <h2>.gitignore — files Git should never track</h2>
+  <p>Build outputs, <code>node_modules</code>, <code>.env</code> files with passwords, editor junk… Right-click such a file in <b>Changes</b> → <b>Add to .gitignore</b>.</p>
+</section>
+
+<section id="daily">
+  <h1>Everyday workflow</h1>
+  <div class="steps">
+    <div class="step"><span class="n">1</span><div><b>Get the latest version</b> — if the Overview says commits are waiting, press <b>Pull</b> (or <b>Sync</b>).</div></div>
+    <div class="step"><span class="n">2</span><div><b>Work</b> — edit files as usual. They show up under <b>Changes</b> with a letter: <span class="st M">M</span> modified, <span class="st U">U</span> new (untracked), <span class="st D">D</span> deleted.</div></div>
+    <div class="step"><span class="n">3</span><div><b>Review</b> — click a file to see a side-by-side diff (red = removed, green = added). Throw away a change you don't want with ↶ <i>Discard</i>.</div></div>
+    <div class="step"><span class="n">4</span><div><b>Stage</b> — press <b>+</b> on files that belong together (or skip this: Commit offers to take all changes). You can even stage single lines: select them in the diff → right-click → <i>Stage Selected Lines</i>.</div></div>
+    <div class="step"><span class="n">5</span><div><b>Commit</b> — write a short message (what &amp; why) and press <b>Commit</b> (<kbd>Ctrl</kbd>+<kbd>Enter</kbd>).</div></div>
+    <div class="step"><span class="n">6</span><div><b>Sync</b> — press <b>Sync</b> to upload your commits (it first downloads others' commits so nothing clashes).</div></div>
+  </div>
+  <div class="tip">💡 Commit often, in small logical pieces ("Add login form", "Fix typo in README"). Small commits are easy to understand and easy to undo.</div>
+</section>
+
+<section id="branches">
+  <h1>Branches</h1>
+  <p>A <b>branch</b> is a separate line of work. Your main line is usually <code>main</code>. For a new feature or an experiment, create a branch, commit there freely,
+    and when it's done <b>merge</b> it back. If the experiment fails, just delete the branch — <code>main</code> was never touched.</p>
+  <svg class="diagram" viewBox="0 0 760 150" role="img" aria-label="Branch and merge diagram">
+    <path d="M40 100 H720" class="lane l1"/>
+    <path d="M200 100 C 240 100, 240 40, 280 40 H520 C 560 40, 560 100, 600 100" class="lane l2"/>
+    <g class="c1"><circle cx="80" cy="100" r="9"/><circle cx="200" cy="100" r="9"/><circle cx="380" cy="100" r="9"/><circle cx="680" cy="100" r="9"/></g>
+    <g class="c2"><circle cx="320" cy="40" r="9"/><circle cx="440" cy="40" r="9"/></g>
+    <circle cx="600" cy="100" r="10" class="merge"/>
+    <text x="40" y="130" class="lbl l">main</text><text x="300" y="20" class="lbl l">feature/login</text>
+    <text x="600" y="135" class="lbl">merge</text><text x="200" y="135" class="lbl">branch created</text>
+  </svg>
+  <ul>
+    <li><b>Create</b>: <button class="mini" data-cmd="gitCompass.createBranch">New branch</button> — it starts from where you are and you switch to it automatically.</li>
+    <li><b>Switch</b>: <button class="mini" data-cmd="gitCompass.switchBranch">Switch branch</button>, or double-click a branch label in the Commit Graph. Your files change to that branch's version.
+      Uncommitted changes? Git Compass offers to stash them or bring them along.</li>
+    <li><b>Merge</b>: switch to the branch that should <i>receive</i> the work (e.g. <code>main</code>), then <button class="mini" data-cmd="gitCompass.merge">Merge…</button> and pick the feature branch.</li>
+    <li><b>Rebase</b> (advanced): instead of a merge commit, replays your commits on top of another branch for a straight history. Right-click a branch → <i>Rebase Current Branch onto This</i>.</li>
+    <li><b>Delete</b>: right-click → Delete. Git warns you if the branch has work that isn't merged anywhere.</li>
+    <li><b>Remote branches</b> (<span class="badge remote">origin/feature</span>) are the server's branches as of your last fetch. Double-click / Checkout one to get a local branch that tracks it.</li>
+  </ul>
+  <h2>Merge vs. rebase — which?</h2>
+  <p><b>Merge</b> is always safe and keeps history exactly as it happened. <b>Rebase</b> gives a cleaner line but rewrites your commits — never rebase commits that others already have. When unsure: <b>merge</b>.</p>
+</section>
+
+<section id="sync">
+  <h1>Working with the remote</h1>
+  <table class="kv">
+    <tr><td><b>Fetch</b></td><td>Ask the server "what's new?" Downloads information about new commits but <b>does not change your files</b>. Always safe. Git Compass can do it automatically in the background.</td></tr>
+    <tr><td><b>Pull</b> ↓</td><td>Fetch + bring the new commits into your branch and your files.</td></tr>
+    <tr><td><b>Push</b> ↑</td><td>Upload your new commits to the server.</td></tr>
+    <tr><td><b>Sync</b> ⟳</td><td>Pull, then Push. The one button you need most of the time.</td></tr>
+    <tr><td><b>Publish branch</b></td><td>The first push of a new branch: creates it on the server and links ("tracks") it.</td></tr>
+  </table>
+  <p>The Overview shows <span class="orange"><b>↑2 to push</b></span> (your commits not on the server) and <span class="blue"><b>↓3 to pull</b></span> (server commits you don't have).
+    Both at once means the branch <i>diverged</i>: Sync will merge them for you (you may get conflicts if you both edited the same lines).</p>
+  <div class="warn">⚠ <b>"Push rejected"</b> means someone pushed before you. Don't force push — just <b>Sync</b>.</div>
+  <h2>Pull strategy</h2>
+  <p>Setting <code>gitCompass.pullStrategy</code>: <b>merge</b> (default, safest), <b>rebase</b> (straight history), or <b>ff-only</b> (only pull when no merging is needed).</p>
+</section>
+
+<section id="conflicts">
+  <h1>Resolving conflicts</h1>
+  <p>A conflict happens when two branches changed <b>the same lines</b> of a file differently and Git can't decide which version is right. It's normal and fixable — nothing is lost.</p>
+  <h2>Step by step</h2>
+  <div class="steps">
+    <div class="step"><span class="n">1</span><div>The <b>Changes</b> view shows a <b>Merge Conflicts</b> group. The Overview shows an orange banner with <b>Continue</b> / <b>Abort</b>.</div></div>
+    <div class="step"><span class="n">2</span><div>Click a conflicted file. You'll see blocks like this:
+<pre class="code"><span class="cur">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD   (Current — your branch)
+  color: blue;</span>
+=======
+<span class="inc">  color: green;
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature  (Incoming — the other branch)</span></pre>
+      Above each block VS Code shows clickable links: <b>Accept Current</b> · <b>Accept Incoming</b> · <b>Accept Both</b> · <b>Compare</b>. Or edit the text by hand. Or right-click the file → <b>Open in Merge Editor</b> for a 3-pane view.</div></div>
+    <div class="step"><span class="n">3</span><div>Make sure no <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code>, <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> lines remain, then save.</div></div>
+    <div class="step"><span class="n">4</span><div>Press ✓ <b>Mark Resolved</b> on the file (stages it). Shortcut for whole files: <b>Keep Current</b> / <b>Keep Incoming</b> in the right-click menu.</div></div>
+    <div class="step"><span class="n">5</span><div>When all files are resolved press <b>Continue</b> in the Overview. Changed your mind? <b>Abort</b> returns everything to how it was before.</div></div>
+  </div>
+  <div class="tip">💡 During a <b>rebase</b>, "Current" is the branch you rebase <i>onto</i> and "Incoming" is <i>your</i> commit being replayed — the opposite of a merge.</div>
+</section>
+
+<section id="undo">
+  <h1>Undo anything</h1>
+  <table class="kv undo">
+    <tr><th>I want to…</th><th>Do this</th></tr>
+    <tr><td>throw away my edits in a file</td><td>Changes → file → ↶ <b>Discard</b> (new files go to the trash)</td></tr>
+    <tr><td>un-stage a file</td><td>Staged Changes → file → <b>−</b></td></tr>
+    <tr><td>take back my last commit (not pushed)</td><td><button class="mini" data-cmd="gitCompass.undoLastCommit">Undo last commit</button> — the changes go back to Staged so you can redo it</td></tr>
+    <tr><td>fix the last commit's message</td><td><button class="mini" data-cmd="gitCompass.editLastCommitMessage">Edit last commit message</button></td></tr>
+    <tr><td>add a forgotten file to the last commit</td><td>Stage it, tick <b>Amend last commit</b> in the Overview, press Commit</td></tr>
+    <tr><td>undo a commit that's already pushed</td><td>Right-click the commit → <b>Revert</b> (creates a new "opposite" commit — safe for shared branches)</td></tr>
+    <tr><td>go back to an older version of one file</td><td>File History → commit → <b>Restore This Version</b>, or right-click a file inside a commit → Restore</td></tr>
+    <tr><td>move my branch back to an older commit</td><td>Right-click the commit → <b>Reset Current Branch to Here…</b> (choose keep changes / discard)</td></tr>
+    <tr><td>cancel a merge/rebase in progress</td><td>Overview → <b>Abort</b></td></tr>
+    <tr><td>recover something I "lost" (deleted branch, bad reset, rebase gone wrong)</td><td><b>Undo History</b> view → right-click the point before the mistake → <b>Restore to This Point</b> or <b>Create Branch Here</b></td></tr>
+  </table>
+  <div class="tip">💡 Once something is committed, it's almost impossible to really lose it. <b>Undo History</b> remembers every position of your branch for ~90 days.</div>
+</section>
+
+<section id="stash">
+  <h1>Stash — put changes aside</h1>
+  <p>Need to switch branch or pull but you're in the middle of something you don't want to commit yet? <button class="mini" data-cmd="gitCompass.stash">Stash</button> puts all your changes into a drawer and your folder becomes clean.</p>
+  <ul>
+    <li><b>Apply</b> = take the changes back, keep a copy in the drawer.</li>
+    <li><b>Pop</b> = take the changes back and remove them from the drawer.</li>
+    <li><b>Drop</b> = throw the stash away.</li>
+    <li><b>Create Branch from Stash</b> = start a new branch with those changes.</li>
+  </ul>
+  <p>Expand a stash in the <b>Stashes</b> view to see what's inside (click files to diff).</p>
+</section>
+
+<section id="worktrees">
+  <h1>Worktrees — several branches at once</h1>
+  <p>Normally a repository folder has <b>one</b> branch checked out; switching branches swaps the files in that folder. A <b>worktree</b> is an
+    <b>extra folder</b> connected to the same repository, with a <b>different branch</b> checked out. Both folders share all commits, branches, tags and stashes
+    (there is still only one history) — only the files on disk differ.</p>
+  <svg class="diagram" viewBox="0 0 760 170" role="img" aria-label="One repository, two worktree folders">
+    <g class="box b3"><rect x="270" y="10" width="220" height="60" rx="10"/><text x="380" y="36">One repository history</text><text x="380" y="56" class="small">commits · branches · stashes</text></g>
+    <g class="box b1"><rect x="40" y="100" width="260" height="60" rx="10"/><text x="170" y="126">my-project/</text><text x="170" y="146" class="small">main worktree — branch feature/login</text></g>
+    <g class="box b2"><rect x="460" y="100" width="260" height="60" rx="10"/><text x="590" y="126">my-project-hotfix/</text><text x="590" y="146" class="small">linked worktree — branch main</text></g>
+    <path d="M330 70 L200 100" class="flow"/><path d="M430 70 L560 100" class="flow"/>
+  </svg>
+  <h2>When is this useful?</h2>
+  <ul>
+    <li>You're in the middle of a feature and an <b>urgent fix</b> on <code>main</code> is needed — no stashing, no half-finished commits: open a worktree for <code>main</code>.</li>
+    <li><b>Reviewing</b> a colleague's branch or a pull request while your own work stays untouched.</li>
+    <li>Running <b>two versions side by side</b> (e.g. compare behaviour, long builds or tests on one branch while coding on another).</li>
+  </ul>
+  <h2>How</h2>
+  <ol>
+    <li><button class="mini" data-cmd="gitCompass.createWorktree">New worktree</button> (or right-click a branch → <i>New Worktree…</i>). Pick a branch — or create a new one — and a folder (by default next to your repository, e.g. <code>my-project-hotfix</code>).</li>
+    <li>Choose <b>Open in New Window</b>. That window is a normal Git Compass window for that branch: commit, push, pull as usual.</li>
+    <li>Done? In the <b>Worktrees</b> view press 🗑 <b>Remove</b>. The folder is deleted; the branch and its commits stay.</li>
+  </ol>
+  <div class="tip">💡 Rules: a branch can be checked out in only <b>one</b> worktree at a time (Git Compass tells you where it is open and offers to open that folder).
+    Don't delete a worktree folder by hand — if you did, use <b>Prune Missing Worktrees</b>. <b>Lock</b> a worktree that lives on a removable drive so it isn't pruned while unplugged.</div>
+</section>
+
+<section id="history">
+  <h1>Exploring history</h1>
+  <h2>Commit Graph <button class="mini" data-cmd="gitCompass.openGraph">open</button></h2>
+  <p>There are two versions: the compact <b>Graph</b> view in the Git Compass sidebar (always visible while you work — you can even drag it into
+    the Explorer or the secondary side bar) and the big editor tab with author/date columns and a details pane.</p>
+  <p>A visual map of all branches. Each dot is a commit, each colour a line of work; where lines join is a merge. Click a commit to see its details and changed files,
+    right-click commits or branch labels for actions, double-click a branch label to switch to it. Search by message, author, commit ID, <b>changed text</b> or <b>file path</b>.</p>
+  <h2>File History</h2>
+  <p>Open any file and look at the <b>File History</b> view: every commit that touched it (following renames). Click one to see what changed in it. Pin 📌 the view to keep showing one file.</p>
+  <h2>Blame — who wrote this line?</h2>
+  <p>The faint text at the end of the current line says who last changed it, when, and why (commit message). Hover it for links. Toggle full-file blame (with age colours)
+    via the editor title menu or <button class="mini" data-cmd="gitCompass.toggleFileBlame">Toggle File Blame</button>.</p>
+  <h2>Compare</h2>
+  <p><button class="mini" data-cmd="gitCompass.compareRefs">Compare two branches/commits</button> shows commits only in one side and every file that differs.
+    Right-click a branch → <i>Compare with Current Branch</i> is the quickest way to see "what's in this branch that isn't in mine?"</p>
+</section>
+
+<section id="rewrite">
+  <h1>Rewriting history (advanced)</h1>
+  <p>Before you push, you can polish your commits. <b>Rule: only rewrite commits that nobody else has yet</b> (not pushed, or on your own branch).</p>
+  <h2>Edit history (interactive rebase)</h2>
+  <p>Right-click a commit → <b>Edit History from Here…</b>. A visual editor lists the commits from that one up to now (oldest first). For each choose:</p>
+  <table class="kv">
+    <tr><td><b>Keep</b> (pick)</td><td>leave it as is</td></tr>
+    <tr><td><b>Reword</b></td><td>change its message (type the new message right there)</td></tr>
+    <tr><td><b>Edit</b></td><td>stop there so you can change its files; then stage and press Continue</td></tr>
+    <tr><td><b>Squash ↑</b></td><td>melt it into the commit above (messages are combined)</td></tr>
+    <tr><td><b>Fixup ↑</b></td><td>melt it into the commit above (its message is dropped) — great for "fix typo" commits</td></tr>
+    <tr><td><b>Drop</b></td><td>remove the commit and its changes</td></tr>
+  </table>
+  <p>Drag rows to reorder. Press <b>Start</b>. If a conflict appears, resolve it as usual and press Continue — or Abort to get everything back.</p>
+  <h2>Force push</h2>
+  <p>After rewriting commits that were pushed, a normal push is rejected. <b>Force Push</b> (in the ⋯ menu of the Overview) replaces the server's version. Git Compass uses
+    <code>--force-with-lease</code>, which refuses if someone else pushed in the meantime. Still: never force push to a shared <code>main</code>.</p>
+</section>
+
+<section id="github">
+  <h1>GitHub</h1>
+  <ul>
+    <li><b>Sign in</b> once with VS Code's Accounts menu (bottom-left person icon) or <button class="mini" data-cmd="gitCompass.githubSignIn">Sign in to GitHub</button>. No tokens to copy.</li>
+    <li><b>Publish</b> a local repository: <button class="mini" data-cmd="gitCompass.publishToGitHub">Publish to GitHub</button> (private or public).</li>
+    <li><b>Pull requests</b>: a PR asks to merge your branch into another one, with review on GitHub. Push your branch, then
+      <button class="mini" data-cmd="gitCompass.createPullRequest">Create pull request</button>. The <b>Pull Requests</b> view lists open PRs — expand one to see changed files, right-click to check it out locally.</li>
+    <li><b>Open on GitHub</b>: right-click a file, line, commit or branch → <i>Open on GitHub</i>; great for sharing links.</li>
+  </ul>
+</section>
+
+<section id="messages">
+  <h1>Good commit messages</h1>
+  <pre class="code">Add password reset form            ← summary: imperative, ≤ ~50 chars
+
+Users can now request a reset link  ← optional details after an empty line:
+from the login page. The link is       what and WHY, not how
+valid for 24 hours.</pre>
+  <p>Good: <i>"Fix crash when list is empty"</i>, <i>"Add dark mode toggle"</i>. Not so good: <i>"changes"</i>, <i>"asdf"</i>, <i>"fixed stuff"</i>.</p>
+</section>
+
+<section id="glossary">
+  <h1>Glossary</h1>
+  <dl>
+    <dt>Repository (repo)</dt><dd>A project folder tracked by Git (the history is stored in the hidden <code>.git</code> folder).</dd>
+    <dt>Commit</dt><dd>A saved snapshot of the project with a message, author and date. Identified by an ID (SHA) like <code>3f9a2c1</code>.</dd>
+    <dt>Stage / staging area / index</dt><dd>The set of changes chosen for the next commit.</dd>
+    <dt>Branch</dt><dd>A movable label pointing to the latest commit of a line of work.</dd>
+    <dt>HEAD</dt><dd>"Where you are now" — usually the current branch.</dd>
+    <dt>Detached HEAD</dt><dd>You checked out a commit or tag directly, not a branch. Fine for looking around; create a branch before committing.</dd>
+    <dt>Remote / origin</dt><dd>A server copy of the repo. <code>origin</code> is the default name of the main remote.</dd>
+    <dt>Upstream / tracking branch</dt><dd>The remote branch your local branch syncs with (e.g. <code>main</code> ↔ <code>origin/main</code>).</dd>
+    <dt>Fetch / Pull / Push</dt><dd>Check for / download and apply / upload commits.</dd>
+    <dt>Merge</dt><dd>Combine another branch's work into the current branch.</dd>
+    <dt>Fast-forward</dt><dd>A merge where your branch simply moves ahead because it had no own new commits.</dd>
+    <dt>Rebase</dt><dd>Replay your commits on top of another commit (rewrites them).</dd>
+    <dt>Conflict</dt><dd>Both sides changed the same lines; you decide the result.</dd>
+    <dt>Cherry-pick</dt><dd>Copy one commit from somewhere onto your current branch.</dd>
+    <dt>Revert</dt><dd>A new commit that undoes an earlier one.</dd>
+    <dt>Reset</dt><dd>Move the current branch to another commit (soft/mixed keep changes, hard discards).</dd>
+    <dt>Stash</dt><dd>A drawer for unfinished changes.</dd>
+    <dt>Worktree</dt><dd>A folder with files checked out from the repository. Besides the main one you can add linked worktrees, each on its own branch.</dd>
+    <dt>Tag</dt><dd>A permanent name for a commit, typically a release (<code>v1.2.0</code>).</dd>
+    <dt>Reflog (Undo History)</dt><dd>Git's log of where HEAD has been — your safety net.</dd>
+    <dt>Pull request (PR)</dt><dd>A GitHub request to merge a branch, with discussion and review.</dd>
+    <dt>.gitignore</dt><dd>A file listing patterns of files Git should ignore.</dd>
+  </dl>
+</section>
+
+<section id="cli">
+  <h1>Behind the buttons</h1>
+  <p>Every action runs ordinary Git commands. You can watch them live in <button class="mini" data-cmd="gitCompass.showOutput">Output → Git Compass</button> — a nice way to learn the command line.</p>
+  <table class="kv mono-l">
+    <tr><td>Stage / Unstage</td><td><code>git add -A -- file</code> / <code>git restore --staged -- file</code></td></tr>
+    <tr><td>Discard</td><td><code>git restore --worktree -- file</code></td></tr>
+    <tr><td>Commit / Amend</td><td><code>git commit -m "…"</code> / <code>git commit --amend</code></td></tr>
+    <tr><td>Undo last commit</td><td><code>git reset --soft HEAD~1</code></td></tr>
+    <tr><td>Fetch / Pull / Push</td><td><code>git fetch --all --prune</code> / <code>git fetch</code> + <code>git merge @{u}</code> / <code>git push</code></td></tr>
+    <tr><td>New branch / Switch</td><td><code>git switch -c name</code> / <code>git switch name</code></td></tr>
+    <tr><td>Merge / Rebase</td><td><code>git merge branch</code> / <code>git rebase branch</code></td></tr>
+    <tr><td>Worktrees</td><td><code>git worktree add PATH BRANCH</code> / <code>git worktree remove PATH</code> / <code>git worktree prune</code></td></tr>
+    <tr><td>Stash / Pop</td><td><code>git stash push -u</code> / <code>git stash pop</code></td></tr>
+    <tr><td>Cherry-pick / Revert</td><td><code>git cherry-pick SHA</code> / <code>git revert SHA</code></td></tr>
+    <tr><td>Reset</td><td><code>git reset --mixed|--soft|--hard SHA</code></td></tr>
+    <tr><td>Edit history</td><td><code>git rebase -i BASE</code></td></tr>
+    <tr><td>History / Blame</td><td><code>git log</code> / <code>git blame</code></td></tr>
+  </table>
+</section>
+
+<section id="tips">
+  <h1>Tips &amp; settings</h1>
+  <ul>
+    <li><b>Settings</b>: <button class="mini" data-cmd="gitCompass.openSettings">Open Git Compass settings</button> — pull strategy, auto-fetch, blame, list vs. tree view, and more.</li>
+    <li><b>Tree / list</b>: the folder icon in the Changes title bar switches between a flat list and a folder tree.</li>
+    <li><b>Multiple repositories</b> in one window: pick the active one at the top of the Overview (it also follows the file you are editing).</li>
+    <li><b>Command Palette</b> (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>): type <i>Git Compass</i> to see every action.</li>
+    <li><b>Something failed?</b> The error message explains it in plain words; <i>Show Git Output</i> shows Git's exact message. For login problems use <i>Run in Terminal</i>.</li>
+    <li>Prefer the guided tour? <button class="mini" data-cmd="gitCompass.openWalkthrough">Open the walkthrough</button>.</li>
+  </ul>
+</section>
+
+</main>
+
+<script nonce="{{nonce}}">
+(function () {
+  const vscode = acquireVsCodeApi();
+  document.querySelectorAll('[data-cmd]').forEach(b => b.addEventListener('click', () => vscode.postMessage({ type: 'command', command: b.dataset.cmd })));
+  const links = [...document.querySelectorAll('#toc a')];
+  function go(id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  links.forEach(a => a.addEventListener('click', e => { e.preventDefault(); go(a.getAttribute('href').slice(1)); }));
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + en.target.id));
+      }
+    });
+  }, { rootMargin: '0px 0px -70% 0px' });
+  document.querySelectorAll('main section').forEach(s => obs.observe(s));
+  window.addEventListener('message', e => { if (e.data.type === 'goto') go(e.data.section); });
+  const initial = '{{section}}';
+  if (initial) setTimeout(() => go(initial), 50);
+})();
+</script>
+</body>
+</html>
